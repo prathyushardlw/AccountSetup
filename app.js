@@ -442,27 +442,20 @@
     }
 
     const filledBytes = await pdfDoc.save();
-    downloadPDF(filledBytes, 'Account_Setup_Form_Filled.pdf');
+    const clientName = (data.clientName || 'Unnamed').replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_');
+    downloadPDF(filledBytes, `Account_Setup_${clientName}.pdf`);
   }
 
   function downloadPDF(bytes, filename) {
     const blob = new Blob([bytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
-
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-    if (isIOS) {
-      window.open(url, '_blank');
-    } else {
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
 
   // ─── INITIALIZATION ─────────────────────────────────────────────────────────
