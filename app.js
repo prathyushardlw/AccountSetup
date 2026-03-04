@@ -46,12 +46,6 @@
       autoFaxNo:        { x: 222, y: 748, size: 14, type: 'check' },
       autoFaxNumber:    { x: 280, y: 726, size: 14 },
 
-      // Online Portal Access — left column, 1mm down
-      user1Name:        { x: 200, y: 652, size: 14 },
-      user1Email:       { x: 200, y: 615, size: 14 },
-      user2Name:        { x: 200, y: 578, size: 14 },
-      user2Email:       { x: 200, y: 541, size: 14 },
-
       // Lab Results contact — right column, 1mm down
       labContactName:   { x: 920, y: 763, size: 14 },
       labPhone:         { x: 900, y: 726, size: 14 },
@@ -226,11 +220,6 @@
       autoFax: radio('autoFax'),
       autoFaxNumber: val('autoFaxNumber'),
 
-      user1Name: val('user1Name'),
-      user1Email: val('user1Email'),
-      user2Name: val('user2Name'),
-      user2Email: val('user2Email'),
-
       labContactName: val('labContactName'),
       labPhone: val('labPhone'),
       labEmail: val('labEmail'),
@@ -362,11 +351,6 @@
       drawField(p1, m.autoFaxYes, data.autoFax === 'Yes');
       drawField(p1, m.autoFaxNo, data.autoFax === 'No');
       drawField(p1, m.autoFaxNumber, data.autoFaxNumber);
-
-      drawField(p1, m.user1Name, data.user1Name);
-      drawField(p1, m.user1Email, data.user1Email);
-      drawField(p1, m.user2Name, data.user2Name);
-      drawField(p1, m.user2Email, data.user2Email);
 
       drawField(p1, m.labContactName, data.labContactName);
       drawField(p1, m.labPhone, data.labPhone);
