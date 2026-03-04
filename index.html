@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TestGO - Account Setup Form</title>
+  <link rel="stylesheet" href="styles.css?v=2">
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="app-header">
+      <div class="logo">TestGO</div>
+      <h1>Account Setup Form</h1>
+      <p class="subtitle">Fill out the form below and generate your completed PDF</p>
+    </header>
+
+    <div class="pdf-upload-section">
+      <label for="pdfUpload" class="upload-label">
+        <span class="upload-icon">&#128196;</span>
+        <span class="upload-text">PDF Template</span>
+        <span class="upload-hint">Auto-loaded. Tap here only to use a different template.</span>
+      </label>
+      <input type="file" id="pdfUpload" accept=".pdf" />
+      <div id="uploadStatus" class="upload-status">Loading template...</div>
+    </div>
+
+    <form id="accountForm" autocomplete="off">
+
+      <!-- Section: Dates -->
+      <section class="form-section">
+        <h2 class="section-title">General Information</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="todaysDate">Today's Date</label>
+            <input type="date" id="todaysDate" name="todaysDate">
+          </div>
+          <div class="form-group">
+            <label for="accountStartDate">Account Start Date</label>
+            <input type="date" id="accountStartDate" name="accountStartDate">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Client Information -->
+      <section class="form-section">
+        <h2 class="section-title">Client Information</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="clientName">Client Name</label>
+            <input type="text" id="clientName" name="clientName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="cityStateZip">City / State / Zip</label>
+            <input type="text" id="cityStateZip" name="cityStateZip">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="clientEmail">Email</label>
+            <input type="email" id="clientEmail" name="clientEmail">
+          </div>
+          <div class="form-group">
+            <label for="clientPhone">Phone Number</label>
+            <input type="tel" id="clientPhone" name="clientPhone">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="clientFax">Fax</label>
+            <input type="tel" id="clientFax" name="clientFax">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Auto Fax</label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="autoFax" value="Yes"> Yes</label>
+              <label class="radio-label"><input type="radio" name="autoFax" value="No"> No</label>
+            </div>
+          </div>
+          <div class="form-group" id="autoFaxNumberGroup" style="display:none;">
+            <label for="autoFaxNumber">Fax Number (for Auto Fax)</label>
+            <input type="tel" id="autoFaxNumber" name="autoFaxNumber">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Online Portal Access -->
+      <section class="form-section">
+        <h2 class="section-title">Online Portal Access</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="user1Name">User 1 Name</label>
+            <input type="text" id="user1Name" name="user1Name">
+          </div>
+          <div class="form-group">
+            <label for="user1Email">User 1 Email</label>
+            <input type="email" id="user1Email" name="user1Email">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="user2Name">User 2 Name</label>
+            <input type="text" id="user2Name" name="user2Name">
+          </div>
+          <div class="form-group">
+            <label for="user2Email">User 2 Email</label>
+            <input type="email" id="user2Email" name="user2Email">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Lab Results -->
+      <section class="form-section">
+        <h2 class="section-title">Lab Results</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="labContactName">Primary Contact Name</label>
+            <input type="text" id="labContactName" name="labContactName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="labPhone">Phone Number</label>
+            <input type="tel" id="labPhone" name="labPhone">
+          </div>
+          <div class="form-group">
+            <label for="labEmail">Email</label>
+            <input type="email" id="labEmail" name="labEmail">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Shipping Information -->
+      <section class="form-section">
+        <h2 class="section-title">Shipping Information</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Shipping Type</label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="shippingType" value="FedEx"> FedEx</label>
+              <label class="radio-label"><input type="radio" name="shippingType" value="UPS"> UPS</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="shippingAddress">Shipping Address (if different)</label>
+            <input type="text" id="shippingAddress" name="shippingAddress">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Scheduling Pickup -->
+      <section class="form-section">
+        <h2 class="section-title">Scheduling Pickup</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="pickupAddress">Pickup Address</label>
+            <input type="text" id="pickupAddress" name="pickupAddress">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Preferred Carrier</label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="preferredCarrier" value="FedEx"> FedEx</label>
+              <label class="radio-label"><input type="radio" name="preferredCarrier" value="UPS"> UPS</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="pickupTimeWindow">Pickup Time Window</label>
+            <input type="text" id="pickupTimeWindow" name="pickupTimeWindow" placeholder="e.g. 2:00 PM - 4:00 PM">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Days Available</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Monday"> Mon</label>
+              <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Tuesday"> Tue</label>
+              <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Wednesday"> Wed</label>
+              <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Thursday"> Thu</label>
+              <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Friday"> Fri</label>
+              <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Saturday"> Sat</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Rejections and Recollections -->
+      <section class="form-section">
+        <h2 class="section-title">Rejections &amp; Recollections Point of Contact</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="rejectName">Name</label>
+            <input type="text" id="rejectName" name="rejectName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="rejectPhone">Phone Number</label>
+            <input type="tel" id="rejectPhone" name="rejectPhone">
+          </div>
+          <div class="form-group">
+            <label for="rejectEmail">Email</label>
+            <input type="email" id="rejectEmail" name="rejectEmail">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Sales Representative -->
+      <section class="form-section">
+        <h2 class="section-title">Sales Representative Information</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="salesName">Name</label>
+            <input type="text" id="salesName" name="salesName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="salesPhone">Phone Number</label>
+            <input type="tel" id="salesPhone" name="salesPhone">
+          </div>
+          <div class="form-group">
+            <label for="salesEmail">Email</label>
+            <input type="email" id="salesEmail" name="salesEmail">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Critical Reporting -->
+      <section class="form-section">
+        <h2 class="section-title">Critical Reporting Point of Contact</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="criticalName">Name</label>
+            <input type="text" id="criticalName" name="criticalName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="criticalPhone">Phone Number</label>
+            <input type="tel" id="criticalPhone" name="criticalPhone">
+          </div>
+          <div class="form-group">
+            <label for="criticalEmail">Email</label>
+            <input type="email" id="criticalEmail" name="criticalEmail">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Provider Information -->
+      <section class="form-section">
+        <h2 class="section-title">Provider Information</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="providerNames">Provider Name(s)</label>
+            <input type="text" id="providerNames" name="providerNames">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="specializations">Specialization(s)</label>
+            <input type="text" id="specializations" name="specializations">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="providerEmails">Email(s)</label>
+            <input type="text" id="providerEmails" name="providerEmails">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="medicarePtan">Medicare / PTAN #</label>
+            <input type="text" id="medicarePtan" name="medicarePtan">
+          </div>
+          <div class="form-group">
+            <label for="npi">NPI #</label>
+            <input type="text" id="npi" name="npi">
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Clinician Signatures (Page 2) -->
+      <section class="form-section clinician-section">
+        <h2 class="section-title">Provider Signature Log &amp; E-Signature Authorization</h2>
+        <p class="section-description">
+          By signing below, you confirm authorization to order laboratory tests and authorize TestGO to use your signature as your electronic signature for all past and future test orders.
+        </p>
+
+        <!-- Clinician 1 -->
+        <div class="clinician-block">
+          <h3>Clinician 1</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clin1Name">Clinician Name (print)</label>
+              <input type="text" id="clin1Name" name="clin1Name">
+            </div>
+            <div class="form-group">
+              <label for="clin1Initials">Initials</label>
+              <input type="text" id="clin1Initials" name="clin1Initials" maxlength="5" class="short-input">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clin1Credentials">Credentials</label>
+              <input type="text" id="clin1Credentials" name="clin1Credentials" placeholder="e.g. MD, DO, NP">
+            </div>
+            <div class="form-group">
+              <label for="clin1Date">Date</label>
+              <input type="date" id="clin1Date" name="clin1Date">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clin1Email">Email</label>
+              <input type="email" id="clin1Email" name="clin1Email">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clin1NPI">NPI</label>
+              <input type="text" id="clin1NPI" name="clin1NPI">
+            </div>
+            <div class="form-group">
+              <label for="clin1ClinicGroup">Clinic / Group</label>
+              <input type="text" id="clin1ClinicGroup" name="clin1ClinicGroup">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label>Signature</label>
+              <div class="signature-pad-wrapper">
+                <canvas class="signature-pad" id="sigPad1" width="500" height="120"></canvas>
+                <button type="button" class="btn-clear-sig" data-pad="sigPad1">Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clinician 2 -->
+        <div class="clinician-block">
+          <h3>Clinician 2</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clin2Name">Clinician Name (print)</label>
+              <input type="text" id="clin2Name" name="clin2Name">
+            </div>
+            <div class="form-group">
+              <label for="clin2Initials">Initials</label>
+              <input type="text" id="clin2Initials" name="clin2Initials" maxlength="5" class="short-input">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clin2Credentials">Credentials</label>
+              <input type="text" id="clin2Credentials" name="clin2Credentials" placeholder="e.g. MD, DO, NP">
+            </div>
+            <div class="form-group">
+              <label for="clin2Date">Date</label>
+              <input type="date" id="clin2Date" name="clin2Date">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clin2Email">Email</label>
+              <input type="email" id="clin2Email" name="clin2Email">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clin2NPI">NPI</label>
+              <input type="text" id="clin2NPI" name="clin2NPI">
+            </div>
+            <div class="form-group">
+              <label for="clin2ClinicGroup">Clinic / Group</label>
+              <input type="text" id="clin2ClinicGroup" name="clin2ClinicGroup">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label>Signature</label>
+              <div class="signature-pad-wrapper">
+                <canvas class="signature-pad" id="sigPad2" width="500" height="120"></canvas>
+                <button type="button" class="btn-clear-sig" data-pad="sigPad2">Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clinician 3 -->
+        <div class="clinician-block">
+          <h3>Clinician 3</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clin3Name">Clinician Name (print)</label>
+              <input type="text" id="clin3Name" name="clin3Name">
+            </div>
+            <div class="form-group">
+              <label for="clin3Initials">Initials</label>
+              <input type="text" id="clin3Initials" name="clin3Initials" maxlength="5" class="short-input">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clin3Credentials">Credentials</label>
+              <input type="text" id="clin3Credentials" name="clin3Credentials" placeholder="e.g. MD, DO, NP">
+            </div>
+            <div class="form-group">
+              <label for="clin3Date">Date</label>
+              <input type="date" id="clin3Date" name="clin3Date">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clin3Email">Email</label>
+              <input type="email" id="clin3Email" name="clin3Email">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="clin3NPI">NPI</label>
+              <input type="text" id="clin3NPI" name="clin3NPI">
+            </div>
+            <div class="form-group">
+              <label for="clin3ClinicGroup">Clinic / Group</label>
+              <input type="text" id="clin3ClinicGroup" name="clin3ClinicGroup">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label>Signature</label>
+              <div class="signature-pad-wrapper">
+                <canvas class="signature-pad" id="sigPad3" width="500" height="120"></canvas>
+                <button type="button" class="btn-clear-sig" data-pad="sigPad3">Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" id="btnGeneratePDF" class="btn btn-primary" disabled>
+          Generate Filled PDF
+        </button>
+        <button type="reset" class="btn btn-secondary">Clear Form</button>
+      </div>
+
+      <!-- Debug toggle -->
+      <div class="debug-toggle">
+        <label class="checkbox-label">
+          <input type="checkbox" id="debugMode">
+          Debug Mode (shows field positions on PDF)
+        </label>
+      </div>
+
+    </form>
+  </div>
+
+  <script src="app.js?v=11"></script>
+</body>
+</html>
