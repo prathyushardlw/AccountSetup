@@ -355,17 +355,6 @@ body {
   color: var(--text);
 }
 
-/* Debug toggle */
-.debug-toggle {
-  text-align: center;
-  padding: 14px 0;
-  opacity: 0.6;
-}
-
-.debug-toggle:hover {
-  opacity: 1;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .container {

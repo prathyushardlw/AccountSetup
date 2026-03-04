@@ -300,7 +300,6 @@
     }
 
     const data = getFormData();
-    const debug = document.getElementById('debugMode').checked;
 
     const pdfDoc = await PDFDocument.load(pdfTemplateBytes);
     const font = await pdfDoc.embedFont(StandardFonts.TimesRomanBoldItalic);
@@ -309,21 +308,10 @@
 
     const blueInk = rgb(0.0, 0.18, 0.65);
     const checkColor = rgb(0.85, 0.0, 0.15);
-    const debugColor = rgb(1, 0, 0);
 
     function drawField(page, mapping, value) {
       if (!value && mapping.type !== 'check' && mapping.type !== 'sig') return;
       if (mapping.type === 'check' && !value) return;
-
-      if (debug) {
-        page.drawCircle({
-          x: mapping.x,
-          y: mapping.y,
-          size: 4,
-          color: debugColor,
-          opacity: 0.7,
-        });
-      }
 
       if (mapping.type === 'check') {
         page.drawText('X', {
@@ -445,8 +433,41 @@
     downloadPDF(filledBytes, `Account_Setup_${clientName}.pdf`);
   }
 
-  function downloadPDF(bytes, filename) {
+  async function downloadPDF(bytes, filename) {
     const blob = new Blob([bytes], { type: 'application/pdf' });
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+    if (isIOS && navigator.canShare) {
+      const file = new File([blob], filename, { type: 'application/pdf' });
+      if (navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: filename });
+          return;
+        } catch (e) {
+          if (e.name === 'AbortError') return;
+        }
+      }
+    }
+
+    if (isIOS) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        const newTab = window.open('', '_blank');
+        if (newTab) {
+          newTab.document.write(
+            '<html><head><title>' + filename + '</title></head>' +
+            '<body style="margin:0"><embed width="100%" height="100%" src="' +
+            reader.result + '" type="application/pdf"></body></html>'
+          );
+          newTab.document.close();
+        }
+      };
+      reader.readAsDataURL(blob);
+      return;
+    }
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
