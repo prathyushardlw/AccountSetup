@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TestGO - Account Setup Form</title>
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=15">
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 </head>
 <body>
@@ -27,7 +27,7 @@
 
     <form id="accountForm" autocomplete="off">
 
-      <!-- Section: Dates -->
+      <!-- Dates -->
       <section class="form-section">
         <h2 class="section-title">General Information</h2>
         <div class="form-row">
@@ -42,100 +42,220 @@
         </div>
       </section>
 
-      <!-- Section: Client Information -->
-      <section class="form-section">
-        <h2 class="section-title">Client Information</h2>
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label for="clientName">Client Name</label>
-            <input type="text" id="clientName" name="clientName">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label for="address">Address</label>
-            <input type="text" id="address" name="address">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label for="cityStateZip">City / State / Zip</label>
-            <input type="text" id="cityStateZip" name="cityStateZip">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="clientEmail">Email</label>
-            <input type="email" id="clientEmail" name="clientEmail">
-          </div>
-          <div class="form-group">
-            <label for="clientPhone">Phone Number</label>
-            <input type="tel" id="clientPhone" name="clientPhone">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="clientFax">Fax</label>
-            <input type="tel" id="clientFax" name="clientFax">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Auto Fax</label>
-            <div class="radio-group">
-              <label class="radio-label"><input type="radio" name="autoFax" value="Yes"> Yes</label>
-              <label class="radio-label"><input type="radio" name="autoFax" value="No"> No</label>
+      <!-- Row: Client Information (left) | Provider Information (right) -->
+      <div class="section-row">
+        <section class="form-section">
+          <h2 class="section-title">Client Information</h2>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="clientName">Client Name</label>
+              <input type="text" id="clientName" name="clientName">
             </div>
           </div>
-          <div class="form-group" id="autoFaxNumberGroup" style="display:none;">
-            <label for="autoFaxNumber">Fax Number (for Auto Fax)</label>
-            <input type="tel" id="autoFaxNumber" name="autoFaxNumber">
-          </div>
-        </div>
-      </section>
-
-      <!-- Section: Lab Results -->
-      <section class="form-section">
-        <h2 class="section-title">Lab Results</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="labContactName">Primary Contact Name</label>
-            <input type="text" id="labContactName" name="labContactName">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="labPhone">Phone Number</label>
-            <input type="tel" id="labPhone" name="labPhone">
-          </div>
-          <div class="form-group">
-            <label for="labEmail">Email</label>
-            <input type="email" id="labEmail" name="labEmail">
-          </div>
-        </div>
-      </section>
-
-      <!-- Section: Shipping Information -->
-      <section class="form-section">
-        <h2 class="section-title">Shipping Information</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Shipping Type</label>
-            <div class="radio-group">
-              <label class="radio-label"><input type="radio" name="shippingType" value="FedEx"> FedEx</label>
-              <label class="radio-label"><input type="radio" name="shippingType" value="UPS"> UPS</label>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="address">Address</label>
+              <input type="text" id="address" name="address">
             </div>
           </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label for="shippingAddress">Shipping Address (if different)</label>
-            <input type="text" id="shippingAddress" name="shippingAddress">
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="cityStateZip">City / State / Zip</label>
+              <input type="text" id="cityStateZip" name="cityStateZip">
+            </div>
           </div>
-        </div>
-      </section>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="clientEmail">Email</label>
+              <input type="email" id="clientEmail" name="clientEmail">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="clientPhone">Phone Number</label>
+              <input type="tel" id="clientPhone" name="clientPhone">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="clientFax">Fax</label>
+              <input type="tel" id="clientFax" name="clientFax">
+            </div>
+          </div>
+        </section>
 
-      <!-- Section: Scheduling Pickup -->
+        <section class="form-section">
+          <h2 class="section-title">Provider Information</h2>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="providerNames">Provider Name(s)</label>
+              <input type="text" id="providerNames" name="providerNames">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="specializations">Specialization(s)</label>
+              <input type="text" id="specializations" name="specializations">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="providerEmails">Email(s)</label>
+              <input type="text" id="providerEmails" name="providerEmails">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="medicarePtan">Medicare / PTAN #</label>
+              <input type="text" id="medicarePtan" name="medicarePtan">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="npi">NPI #</label>
+              <input type="text" id="npi" name="npi">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Row: Rejections & Recollections (left) | Critical Reporting (right) -->
+      <div class="section-row">
+        <section class="form-section">
+          <h2 class="section-title">Rejections &amp; Recollections Point of Contact</h2>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="rejectName">Name</label>
+              <input type="text" id="rejectName" name="rejectName">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="rejectPhone">Phone Number</label>
+              <input type="tel" id="rejectPhone" name="rejectPhone">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="rejectEmail">Email</label>
+              <input type="email" id="rejectEmail" name="rejectEmail">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2 class="section-title">Critical Reporting Point of Contact</h2>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="criticalName">Name</label>
+              <input type="text" id="criticalName" name="criticalName">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="criticalPhone">Phone Number</label>
+              <input type="tel" id="criticalPhone" name="criticalPhone">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="criticalEmail">Email</label>
+              <input type="email" id="criticalEmail" name="criticalEmail">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Row: Lab Results (left) | Shipping Information (right) -->
+      <div class="section-row">
+        <section class="form-section">
+          <h2 class="section-title">Lab Results</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Auto Fax</label>
+              <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="autoFax" value="Yes"> Yes</label>
+                <label class="radio-label"><input type="radio" name="autoFax" value="No"> No</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-row" id="autoFaxNumberGroup" style="display:none;">
+            <div class="form-group full-width">
+              <label for="autoFaxNumber">If Yes, provide Fax Number</label>
+              <input type="tel" id="autoFaxNumber" name="autoFaxNumber">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="onlinePortalAccess">Online Portal Access</label>
+              <input type="text" id="onlinePortalAccess" name="onlinePortalAccess">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="user1Name">User 1 Name</label>
+              <input type="text" id="user1Name" name="user1Name">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="user1Email">User 1 Email</label>
+              <input type="email" id="user1Email" name="user1Email">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="user2Name">User 2 Name</label>
+              <input type="text" id="user2Name" name="user2Name">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="user2Email">User 2 Email</label>
+              <input type="email" id="user2Email" name="user2Email">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2 class="section-title">Shipping Information</h2>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="labContactName">Primary Contact Name</label>
+              <input type="text" id="labContactName" name="labContactName">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="labPhone">Phone Number</label>
+              <input type="tel" id="labPhone" name="labPhone">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="labEmail">Email</label>
+              <input type="email" id="labEmail" name="labEmail">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Shipping Type</label>
+              <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="shippingType" value="FedEx"> FedEx</label>
+                <label class="radio-label"><input type="radio" name="shippingType" value="UPS"> UPS</label>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label for="shippingAddress">Shipping Address (if different)</label>
+              <input type="text" id="shippingAddress" name="shippingAddress">
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Scheduling Pickup (full width) -->
       <section class="form-section">
         <h2 class="section-title">Scheduling Pickup</h2>
         <div class="form-row">
@@ -172,28 +292,7 @@
         </div>
       </section>
 
-      <!-- Section: Rejections and Recollections -->
-      <section class="form-section">
-        <h2 class="section-title">Rejections &amp; Recollections Point of Contact</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="rejectName">Name</label>
-            <input type="text" id="rejectName" name="rejectName">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="rejectPhone">Phone Number</label>
-            <input type="tel" id="rejectPhone" name="rejectPhone">
-          </div>
-          <div class="form-group">
-            <label for="rejectEmail">Email</label>
-            <input type="email" id="rejectEmail" name="rejectEmail">
-          </div>
-        </div>
-      </section>
-
-      <!-- Section: Sales Representative -->
+      <!-- Sales Representative Information -->
       <section class="form-section">
         <h2 class="section-title">Sales Representative Information</h2>
         <div class="form-row">
@@ -201,8 +300,6 @@
             <label for="salesName">Name</label>
             <input type="text" id="salesName" name="salesName">
           </div>
-        </div>
-        <div class="form-row">
           <div class="form-group">
             <label for="salesPhone">Phone Number</label>
             <input type="tel" id="salesPhone" name="salesPhone">
@@ -210,60 +307,6 @@
           <div class="form-group">
             <label for="salesEmail">Email</label>
             <input type="email" id="salesEmail" name="salesEmail">
-          </div>
-        </div>
-      </section>
-
-      <!-- Section: Critical Reporting -->
-      <section class="form-section">
-        <h2 class="section-title">Critical Reporting Point of Contact</h2>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="criticalName">Name</label>
-            <input type="text" id="criticalName" name="criticalName">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="criticalPhone">Phone Number</label>
-            <input type="tel" id="criticalPhone" name="criticalPhone">
-          </div>
-          <div class="form-group">
-            <label for="criticalEmail">Email</label>
-            <input type="email" id="criticalEmail" name="criticalEmail">
-          </div>
-        </div>
-      </section>
-
-      <!-- Section: Provider Information -->
-      <section class="form-section">
-        <h2 class="section-title">Provider Information</h2>
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label for="providerNames">Provider Name(s)</label>
-            <input type="text" id="providerNames" name="providerNames">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label for="specializations">Specialization(s)</label>
-            <input type="text" id="specializations" name="specializations">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label for="providerEmails">Email(s)</label>
-            <input type="text" id="providerEmails" name="providerEmails">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="medicarePtan">Medicare / PTAN #</label>
-            <input type="text" id="medicarePtan" name="medicarePtan">
-          </div>
-          <div class="form-group">
-            <label for="npi">NPI #</label>
-            <input type="text" id="npi" name="npi">
           </div>
         </div>
       </section>
@@ -445,6 +488,6 @@
     </form>
   </div>
 
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>
