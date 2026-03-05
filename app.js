@@ -481,19 +481,16 @@
   // ─── INITIALIZATION ─────────────────────────────────────────────────────────
 
   async function autoLoadPDF() {
-    const uploadSection = document.querySelector('.pdf-upload-section');
-    const uploadStatus = document.getElementById('uploadStatus');
     const generateBtn = document.getElementById('btnGeneratePDF');
 
     try {
       const resp = await fetch('Account setup form updated.pdf');
       if (!resp.ok) throw new Error('PDF not found on server');
       pdfTemplateBytes = await resp.arrayBuffer();
-      uploadSection.classList.add('has-file');
-      uploadStatus.textContent = 'Template loaded automatically';
       generateBtn.disabled = false;
     } catch (e) {
-      console.warn('Auto-load failed, user must upload manually:', e.message);
+      console.warn('Auto-load failed:', e.message);
+      alert('Could not load the PDF template. Please refresh the page.');
     }
   }
 
@@ -501,21 +498,9 @@
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('todaysDate').value = today;
 
-    const pdfInput = document.getElementById('pdfUpload');
-    const uploadSection = document.querySelector('.pdf-upload-section');
-    const uploadStatus = document.getElementById('uploadStatus');
     const generateBtn = document.getElementById('btnGeneratePDF');
 
     autoLoadPDF();
-
-    pdfInput.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      pdfTemplateBytes = await file.arrayBuffer();
-      uploadSection.classList.add('has-file');
-      uploadStatus.textContent = `Loaded: ${file.name}`;
-      generateBtn.disabled = false;
-    });
 
     document.querySelectorAll('input[name="autoFax"]').forEach(radio => {
       radio.addEventListener('change', () => {
