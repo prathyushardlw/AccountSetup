@@ -123,13 +123,23 @@
     function resizeCanvas() {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
+      const newW = Math.round(rect.width * dpr);
+      const newH = Math.round(rect.height * dpr);
+      if (canvas.width === newW && canvas.height === newH) return;
+
+      // Save current drawing so signatures survive resize
+      let saved = null;
+      try { saved = ctx.getImageData(0, 0, canvas.width, canvas.height); } catch (_) {}
+
+      canvas.width = newW;
+      canvas.height = newH;
       ctx.scale(dpr, dpr);
       ctx.lineWidth = 2;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.strokeStyle = '#1a1a2e';
+
+      if (saved) ctx.putImageData(saved, 0, 0);
     }
 
     function getPos(e) {
@@ -412,7 +422,10 @@
         if (pad && !pad.isEmpty()) {
           try {
             const sigDataUrl = pad.toDataURL();
-            const sigBytes = await fetch(sigDataUrl).then(r => r.arrayBuffer());
+            const base64 = sigDataUrl.split(',')[1];
+            const binaryStr = atob(base64);
+            const sigBytes = new Uint8Array(binaryStr.length);
+            for (let b = 0; b < binaryStr.length; b++) sigBytes[b] = binaryStr.charCodeAt(b);
             const sigImage = await pdfDoc.embedPng(sigBytes);
             const sigMapping = m[prefix + 'Sig'];
             p2.drawImage(sigImage, {
@@ -438,8 +451,10 @@
 
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isTouchDevice = navigator.maxTouchPoints > 1;
 
-    if (isIOS && navigator.canShare) {
+    // iPad/touch: never use anchor download (Safari creates extra text file). Share or new-tab only.
+    if ((isIOS || isTouchDevice) && navigator.canShare) {
       const file = new File([blob], filename, { type: 'application/pdf' });
       if (navigator.canShare({ files: [file] })) {
         try {
@@ -451,7 +466,7 @@
       }
     }
 
-    if (isIOS) {
+    if (isIOS || isTouchDevice) {
       const reader = new FileReader();
       reader.onload = function () {
         const newTab = window.open('', '_blank');
