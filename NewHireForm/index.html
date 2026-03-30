@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MLX Requisition &amp; New Hire Form</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="app-header">
+      <img src="mlx-logo.png" alt="Mobile Lab Xpress" class="header-logo">
+      <h1>MLX Requisition &amp; New Hire Form</h1>
+      <p class="subtitle">Fill out the form below and generate your completed PDF</p>
+    </header>
+
+    <form id="newHireForm" autocomplete="off">
+
+      <!-- 1. Position Details -->
+      <section class="form-section">
+        <h2 class="section-title">1. Position Details</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="jobTitle">Job Title</label>
+            <input type="text" id="jobTitle">
+          </div>
+          <div class="form-group">
+            <label for="department">Department</label>
+            <input type="text" id="department">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reportingManager">Reporting Manager</label>
+            <input type="text" id="reportingManager">
+          </div>
+          <div class="form-group">
+            <label for="facilityName">Facility / Clinic / Office Name</label>
+            <input type="text" id="facilityName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="workLocationAddress">Work Location Address (Street, City, State, ZIP)</label>
+            <input type="text" id="workLocationAddress">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="workSchedule">Work Schedule (Days &amp; Timings)</label>
+            <input type="text" id="workSchedule">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Employment Type</label>
+            <div class="radio-group">
+              <label><input type="radio" name="employmentType" value="Full-Time"> Full-Time</label>
+              <label><input type="radio" name="employmentType" value="Part-Time"> Part-Time</label>
+              <label><input type="radio" name="employmentType" value="Contract"> Contract</label>
+              <label><input type="radio" name="employmentType" value="Internship"> Internship</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Reason for Requisition -->
+      <section class="form-section">
+        <h2 class="section-title">2. Reason for Requisition</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <div class="radio-group vertical">
+              <label><input type="radio" name="requisitionReason" value="New Position"> New Position</label>
+              <label>
+                <input type="radio" name="requisitionReason" value="Replacement"> Replacement
+                <span>(Name of employee being replaced):</span>
+                <input type="text" id="replacementName" class="inline-input" placeholder="Employee name">
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Position Requirements -->
+      <section class="form-section">
+        <h2 class="section-title">3. Position Requirements</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="numPositions">Number of Positions</label>
+            <input type="number" id="numPositions" min="1">
+          </div>
+          <div class="form-group">
+            <label for="expectedDateOfJoining">Expected Date of Joining</label>
+            <input type="date" id="expectedDateOfJoining">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="keyResponsibilities">Key Responsibilities</label>
+            <textarea id="keyResponsibilities" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="qualifications">Qualifications / Skills Required</label>
+            <textarea id="qualifications" rows="3"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Budget & Compensation -->
+      <section class="form-section">
+        <h2 class="section-title">4. Budget &amp; Compensation</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Pay Type</label>
+            <div class="radio-group">
+              <label><input type="radio" name="payType" value="Salary"> Salary</label>
+              <label><input type="radio" name="payType" value="Hourly"> Hourly</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="payRate">Pay Rate / Annual Salary</label>
+            <input type="text" id="payRate">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Pay Frequency</label>
+            <div class="radio-group">
+              <label><input type="radio" name="payFrequency" value="Bi-Weekly"> Bi-Weekly</label>
+              <label><input type="radio" name="payFrequency" value="Semi-Monthly"> Semi-Monthly</label>
+              <label><input type="radio" name="payFrequency" value="Monthly"> Monthly</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Pay Basis</label>
+            <div class="radio-group">
+              <label><input type="radio" name="payBasis" value="Gross"> Gross</label>
+              <label><input type="radio" name="payBasis" value="Net"> Net</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Approved Budget</label>
+            <div class="radio-group">
+              <label><input type="radio" name="approvedBudget" value="Yes"> Yes</label>
+              <label><input type="radio" name="approvedBudget" value="No"> No</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Approvals -->
+      <section class="form-section">
+        <h2 class="section-title">5. Approvals</h2>
+        <div class="approval-columns">
+          <div class="approval-col">
+            <h4>Requested By</h4>
+            <div class="form-group">
+              <label for="reqByName">Name</label>
+              <input type="text" id="reqByName">
+            </div>
+            <div class="form-group">
+              <label>Signature</label>
+              <div class="sig-mode-toggle">
+                <button type="button" class="sig-tab active" data-target="reqBySigDraw">Draw</button>
+                <button type="button" class="sig-tab" data-target="reqBySigType">Type</button>
+              </div>
+              <div id="reqBySigDraw" class="sig-panel active">
+                <div class="signature-pad-wrapper">
+                  <canvas class="signature-pad" id="sigPadReqBy" width="500" height="120"></canvas>
+                  <button type="button" class="btn-clear-sig" data-pad="sigPadReqBy">Clear</button>
+                </div>
+              </div>
+              <div id="reqBySigType" class="sig-panel">
+                <input type="text" id="reqBySignature" placeholder="Type full name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="reqByDate">Date</label>
+              <input type="date" id="reqByDate">
+            </div>
+          </div>
+          <div class="approval-col">
+            <h4>Department Head Approval</h4>
+            <div class="form-group">
+              <label for="deptHeadName">Name</label>
+              <input type="text" id="deptHeadName">
+            </div>
+            <div class="form-group">
+              <label>Signature</label>
+              <div class="sig-mode-toggle">
+                <button type="button" class="sig-tab active" data-target="deptHeadSigDraw">Draw</button>
+                <button type="button" class="sig-tab" data-target="deptHeadSigType">Type</button>
+              </div>
+              <div id="deptHeadSigDraw" class="sig-panel active">
+                <div class="signature-pad-wrapper">
+                  <canvas class="signature-pad" id="sigPadDeptHead" width="500" height="120"></canvas>
+                  <button type="button" class="btn-clear-sig" data-pad="sigPadDeptHead">Clear</button>
+                </div>
+              </div>
+              <div id="deptHeadSigType" class="sig-panel">
+                <input type="text" id="deptHeadSignature" placeholder="Type full name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="deptHeadDate">Date</label>
+              <input type="date" id="deptHeadDate">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 2: New Hire Form -->
+      <div class="page-divider"><span>Page 2 &mdash; New Hire Form</span></div>
+
+      <section class="form-section">
+        <h2 class="section-title">New Hire Form</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="employeeName">Employee Name</label>
+            <input type="text" id="employeeName">
+          </div>
+          <div class="form-group">
+            <label for="personalEmail">Personal Email</label>
+            <input type="email" id="personalEmail">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phoneNo">Phone No</label>
+            <input type="tel" id="phoneNo">
+          </div>
+          <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Time Entry System</label>
+            <div class="radio-group">
+              <label><input type="radio" name="timeEntrySystem" value="ADP"> ADP</label>
+              <label><input type="radio" name="timeEntrySystem" value="Encore"> Encore</label>
+              <label><input type="radio" name="timeEntrySystem" value="CLM"> CLM</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Overtime Eligibility</label>
+            <div class="radio-group">
+              <label><input type="radio" name="overtimeEligibility" value="Yes"> Yes</label>
+              <label><input type="radio" name="overtimeEligibility" value="No"> No</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Employment Authorization</label>
+            <div class="radio-group">
+              <label><input type="radio" name="employmentAuth" value="US Citizen"> US Citizen</label>
+              <label><input type="radio" name="employmentAuth" value="Green Card"> Green Card</label>
+              <label><input type="radio" name="employmentAuth" value="H-1B"> H-1B</label>
+              <label><input type="radio" name="employmentAuth" value="CPT"> CPT</label>
+              <label><input type="radio" name="employmentAuth" value="OPT"> OPT</label>
+              <label>
+                <input type="radio" name="employmentAuth" value="Other"> Other:
+                <input type="text" id="employmentAuthOther" class="inline-input" placeholder="Specify">
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Work Mode</label>
+            <div class="radio-group">
+              <label><input type="radio" name="workMode" value="Onsite"> Onsite</label>
+              <label><input type="radio" name="workMode" value="Remote"> Remote</label>
+              <label><input type="radio" name="workMode" value="Hybrid"> Hybrid</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" id="btnGenerate" class="btn btn-primary" disabled>Generate Filled PDF</button>
+        <button type="reset" class="btn btn-secondary">Clear Form</button>
+      </div>
+
+    </form>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
