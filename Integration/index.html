@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EMR Integration Request Form</title>
+  <link rel="stylesheet" href="styles.css?v=1">
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="app-header">
+      <img src="logo.png" alt="TestGO - DLW | MicroGen Health" class="header-logo">
+      <h1>EMR Integration Request Form</h1>
+      <p class="subtitle">Fill out the form below and generate your completed PDF</p>
+    </header>
+
+    <form id="emrForm" autocomplete="off">
+
+      <!-- 1. Client Information -->
+      <section class="form-section">
+        <h2 class="section-title">Client Information</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="clientName">Client Name</label>
+            <input type="text" id="clientName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="clientAddress">Client Address</label>
+            <input type="text" id="clientAddress">
+          </div>
+          <div class="form-group">
+            <label for="clientContact">Contact Number</label>
+            <input type="tel" id="clientContact">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="clientEmail">Email ID</label>
+            <input type="email" id="clientEmail">
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. EMR Details -->
+      <section class="form-section">
+        <h2 class="section-title">EMR Details</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="emrName">EMR Name</label>
+            <input type="text" id="emrName">
+          </div>
+        </div>
+        <div class="info-note">
+          <strong>If EMR is Practice Fusion:</strong> Account Number = First 3–5 characters of Client Name + 001<br>
+          <em>Example: Client Name 'TESTGO' → Account Number 'testgo001'</em>
+        </div>
+      </section>
+
+      <!-- 3. Provider Information -->
+      <section class="form-section">
+        <h2 class="section-title">Provider Information</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="providerName">Provider Name</label>
+            <input type="text" id="providerName">
+          </div>
+          <div class="form-group">
+            <label for="npiNumber">NPI Number</label>
+            <input type="text" id="npiNumber">
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. EMR Point of Contact -->
+      <section class="form-section">
+        <h2 class="section-title">EMR Point of Contact</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="pocName">Name</label>
+            <input type="text" id="pocName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pocEmail">Email</label>
+            <input type="email" id="pocEmail">
+          </div>
+          <div class="form-group">
+            <label for="pocContact">Contact Number</label>
+            <input type="tel" id="pocContact">
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Integration Type -->
+      <section class="form-section">
+        <h2 class="section-title">Integration Type</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <div class="radio-group">
+              <label><input type="radio" name="integrationType" value="Uni-Directional"> Uni-Directional</label>
+              <label><input type="radio" name="integrationType" value="Bi-Directional"> Bi-Directional</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Sales Rep Information -->
+      <section class="form-section">
+        <h2 class="section-title">Sales Rep Information</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="salesName">Name</label>
+            <input type="text" id="salesName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="salesEmail">Email</label>
+            <input type="email" id="salesEmail">
+          </div>
+          <div class="form-group">
+            <label for="salesContact">Contact Number</label>
+            <input type="tel" id="salesContact">
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Approved By -->
+      <section class="form-section">
+        <h2 class="section-title">Approved By</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="approvedName">Name</label>
+            <input type="text" id="approvedName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="approvedEmail">Email</label>
+            <input type="email" id="approvedEmail">
+          </div>
+          <div class="form-group">
+            <label for="approvedContact">Contact Number</label>
+            <input type="tel" id="approvedContact">
+          </div>
+        </div>
+      </section>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" id="btnGenerate" class="btn btn-primary" disabled>Generate Filled PDF</button>
+        <button type="reset" class="btn btn-secondary">Clear Form</button>
+      </div>
+
+    </form>
+  </div>
+
+  <script src="app.js?v=1"></script>
+</body>
+</html>
