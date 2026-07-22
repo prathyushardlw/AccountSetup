@@ -118,7 +118,7 @@ body {
 .form-group textarea {
   width: 100%;
   padding: 10px 12px;
-  font-size: 1rem;
+  font-size: 1.15rem;
   border: 1.5px solid var(--border);
   border-radius: 8px;
   background: #fff;
@@ -135,6 +135,15 @@ body {
   outline: none;
   border-color: var(--border-focus);
   box-shadow: 0 0 0 3px rgba(27, 94, 46, 0.15);
+}
+
+.form-group textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.form-group textarea.large-textbox {
+  min-height: 220px;
 }
 
 /* Info Note */

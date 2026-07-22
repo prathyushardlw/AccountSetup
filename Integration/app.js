@@ -57,6 +57,10 @@
       clientContact: textVal('clientContact'),
       clientEmail: textVal('clientEmail'),
       emrName: textVal('emrName'),
+      overallVolume: textVal('overallVolume'),
+      patientVolume: textVal('patientVolume'),
+      pcrVolume: textVal('pcrVolume'),
+      volumeSummary: textVal('volumeSummary'),
       providerName: textVal('providerName'),
       npiNumber: textVal('npiNumber'),
       pocName: textVal('pocName'),
@@ -83,11 +87,32 @@
     var data = getFormData();
     var pdfDoc = await PDFDocument.load(pdfTemplateBytes);
     var font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    var regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
     var pages = pdfDoc.getPages();
     var page = pages[0];
     var blueInk = rgb(0.0, 0.18, 0.65);
     var checkColor = rgb(0.0, 0.18, 0.65);
-    var FS = 11;
+    var FS = 18;
+
+    function wrapText(text, activeFont, size, maxWidth) {
+      if (!text) return [];
+      var words = String(text).replace(/\s+/g, ' ').trim().split(' ');
+      var lines = [];
+      var line = '';
+
+      words.forEach(function (word) {
+        var next = line ? line + ' ' + word : word;
+        if (activeFont.widthOfTextAtSize(next, size) <= maxWidth) {
+          line = next;
+        } else {
+          if (line) lines.push(line);
+          line = word;
+        }
+      });
+
+      if (line) lines.push(line);
+      return lines;
+    }
 
     function drawText(x, y, text, size) {
       if (!text) return;
@@ -111,11 +136,96 @@
     // Mark integration type checkbox
     markCheckbox(INTEGRATION_TYPE_CB, data.integrationType);
 
+    if (data.overallVolume || data.patientVolume || data.pcrVolume || data.volumeSummary) {
+      addVolumeSummaryPage(pdfDoc, data, font, regularFont, blueInk);
+    }
+
     // ─── Save & Download ───
     var filledBytes = await pdfDoc.save();
     var nameBase = (data.clientName || 'EMR_Integration')
       .replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_') || 'EMR_Integration';
     downloadPdf(filledBytes, 'EMR_Integration_' + nameBase + '.pdf');
+
+    function addVolumeSummaryPage(doc, values, boldFont, bodyFont, inkColor) {
+      var summaryPage = doc.addPage([1364, 1670]);
+      var margin = 90;
+      var y = 1510;
+      var primary = rgb(0.105, 0.369, 0.18);
+      var primaryDark = rgb(0.051, 0.231, 0.102);
+      var textColor = rgb(0.102, 0.18, 0.102);
+      var border = rgb(0.78, 0.84, 0.78);
+      var lightGreen = rgb(0.91, 0.96, 0.92);
+
+      summaryPage.drawText('EMR Integration Request Form', {
+        x: margin,
+        y: y,
+        size: 34,
+        font: boldFont,
+        color: primaryDark,
+      });
+      y -= 54;
+
+      summaryPage.drawRectangle({ x: margin, y: y - 42, width: 1184, height: 42, color: primary });
+      summaryPage.drawText('Expected Volume Summary', {
+        x: margin + 18,
+        y: y - 29,
+        size: 20,
+        font: boldFont,
+        color: rgb(1, 1, 1),
+      });
+      y -= 86;
+
+      function drawWrappedCellText(text, x, startY, maxWidth) {
+        var lines = wrapText(text || '', boldFont, 24, maxWidth);
+        lines.forEach(function (line, index) {
+          summaryPage.drawText(line, { x: x, y: startY - (index * 30), size: 24, font: boldFont, color: inkColor });
+        });
+      }
+
+      var tableX = margin;
+      var tableY = y;
+      var tableWidth = 1184;
+      var labelWidth = 365;
+      var valueWidth = tableWidth - labelWidth;
+      var headerHeight = 58;
+      var rowHeight = 92;
+      var summaryHeight = 430;
+      var tableHeight = headerHeight + (rowHeight * 3) + summaryHeight;
+      var valueX = tableX + labelWidth;
+
+      summaryPage.drawRectangle({ x: tableX, y: tableY - tableHeight, width: tableWidth, height: tableHeight, borderColor: primary, borderWidth: 3 });
+      summaryPage.drawRectangle({ x: tableX, y: tableY - headerHeight, width: tableWidth, height: headerHeight, color: lightGreen });
+      summaryPage.drawLine({ start: { x: valueX, y: tableY }, end: { x: valueX, y: tableY - tableHeight }, thickness: 1.5, color: border });
+
+      summaryPage.drawText('Detail', { x: tableX + 18, y: tableY - 38, size: 20, font: boldFont, color: textColor });
+      summaryPage.drawText('Information', { x: valueX + 18, y: tableY - 38, size: 20, font: boldFont, color: textColor });
+
+      function tableRow(label, value, rowTop, height) {
+        summaryPage.drawLine({ start: { x: tableX, y: rowTop }, end: { x: tableX + tableWidth, y: rowTop }, thickness: 1.5, color: border });
+        summaryPage.drawText(label, { x: tableX + 18, y: rowTop - 43, size: 20, font: boldFont, color: textColor });
+        drawWrappedCellText(value, valueX + 18, rowTop - 43, valueWidth - 36);
+      }
+
+      var rowTop = tableY - headerHeight;
+      tableRow('Expected Overall Volume', values.overallVolume, rowTop, rowHeight);
+      rowTop -= rowHeight;
+      tableRow('Expected Patient Volume', values.patientVolume, rowTop, rowHeight);
+      rowTop -= rowHeight;
+      tableRow('Expected PCR Volume', values.pcrVolume, rowTop, rowHeight);
+      rowTop -= rowHeight;
+      tableRow('Summary', values.volumeSummary, rowTop, summaryHeight);
+
+      y = tableY - tableHeight - 40;
+
+      summaryPage.drawRectangle({ x: margin, y: 90, width: 1184, height: 70, color: lightGreen });
+      summaryPage.drawText('This page was generated from the Integration form volume details.', {
+        x: margin + 18,
+        y: 116,
+        size: 16,
+        font: bodyFont,
+        color: textColor,
+      });
+    }
   }
 
   async function downloadPdf(bytes, filename) {
