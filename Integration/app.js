@@ -57,9 +57,10 @@
       clientContact: textVal('clientContact'),
       clientEmail: textVal('clientEmail'),
       emrName: textVal('emrName'),
-      overallVolume: textVal('overallVolume'),
-      patientVolume: textVal('patientVolume'),
       pcrVolume: textVal('pcrVolume'),
+      toxVolume: textVal('toxVolume'),
+      bloodVolume: textVal('bloodVolume'),
+      patientVolume: textVal('patientVolume'),
       volumeSummary: textVal('volumeSummary'),
       providerName: textVal('providerName'),
       npiNumber: textVal('npiNumber'),
@@ -136,7 +137,7 @@
     // Mark integration type checkbox
     markCheckbox(INTEGRATION_TYPE_CB, data.integrationType);
 
-    if (data.overallVolume || data.patientVolume || data.pcrVolume || data.volumeSummary) {
+    if (data.pcrVolume || data.toxVolume || data.bloodVolume || data.patientVolume || data.volumeSummary) {
       addVolumeSummaryPage(pdfDoc, data, font, regularFont, blueInk);
     }
 
@@ -190,7 +191,7 @@
       var headerHeight = 58;
       var rowHeight = 92;
       var summaryHeight = 430;
-      var tableHeight = headerHeight + (rowHeight * 3) + summaryHeight;
+      var tableHeight = headerHeight + (rowHeight * 4) + summaryHeight;
       var valueX = tableX + labelWidth;
 
       summaryPage.drawRectangle({ x: tableX, y: tableY - tableHeight, width: tableWidth, height: tableHeight, borderColor: primary, borderWidth: 3 });
@@ -207,11 +208,13 @@
       }
 
       var rowTop = tableY - headerHeight;
-      tableRow('Expected Overall Volume', values.overallVolume, rowTop, rowHeight);
+      tableRow('Expected PCR Volume', values.pcrVolume, rowTop, rowHeight);
+      rowTop -= rowHeight;
+      tableRow('Expected Tox Volume', values.toxVolume, rowTop, rowHeight);
+      rowTop -= rowHeight;
+      tableRow('Expected Blood Volume', values.bloodVolume, rowTop, rowHeight);
       rowTop -= rowHeight;
       tableRow('Expected Patient Volume', values.patientVolume, rowTop, rowHeight);
-      rowTop -= rowHeight;
-      tableRow('Expected PCR Volume', values.pcrVolume, rowTop, rowHeight);
       rowTop -= rowHeight;
       tableRow('Summary', values.volumeSummary, rowTop, summaryHeight);
 
