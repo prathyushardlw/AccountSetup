@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TestGO - eRequisition Form</title>
+  <link rel="stylesheet" href="styles.css?v=2">
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="app-header">
+      <img src="logo.png" alt="TestGO - DLW | MicroGen Health" class="header-logo">
+      <h1>eRequisition Form</h1>
+      <p class="subtitle">Fill out the RMDS requisition form and generate your completed PDF</p>
+    </header>
+
+    <section class="form-section status-section">
+      <h2 class="section-title">PDF Template</h2>
+      <p id="pdfStatus" class="status-message">Loading RMDS REQ Form April 10.pdf...</p>
+    </section>
+
+
+
+    <form id="erequisitionForm" autocomplete="off">
+      <section class="form-section">
+        <h2 class="section-title">Practice Information</h2>
+        <div class="form-row">
+          <div class="form-group"><label for="practiceName">Practice Name</label><input type="text" id="practiceName"></div>
+          <div class="form-group"><label for="physician">Physician</label><input type="text" id="physician"></div>
+          <div class="form-group small"><label for="npi">NPI</label><input type="text" id="npi"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="phoneNo">Phone No.</label><input type="tel" id="phoneNo"></div>
+          <div class="form-group wide"><label for="practiceAddress">Address</label><input type="text" id="practiceAddress"></div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="section-title">Patient Information</h2>
+        <div class="form-row">
+          <div class="form-group"><label for="dateOfService">Date of Service</label><input type="date" id="dateOfService"></div>
+          <div class="form-group"><label for="firstName">First Name</label><input type="text" id="firstName"></div>
+          <div class="form-group"><label for="lastName">Last Name</label><input type="text" id="lastName"></div>
+          <div class="form-group small"><label for="dob">DOB</label><input type="date" id="dob"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group small">
+            <label>Gender</label>
+            <div class="radio-group"><label><input type="radio" name="gender" value="M"> M</label><label><input type="radio" name="gender" value="F"> F</label></div>
+          </div>
+          <div class="form-group wide"><label for="patientAddress">Address</label><input type="text" id="patientAddress"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="patientPhone">Patient Phone No.</label><input type="tel" id="patientPhone"></div>
+          <div class="form-group"><label for="secondaryPhone">Secondary Phone No.</label><input type="tel" id="secondaryPhone"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label>Physician/Provider Signature</label>
+            <div class="sig-mode-toggle">
+              <button type="button" class="sig-tab active" data-target="providerSigDraw">Draw</button>
+              <button type="button" class="sig-tab" data-target="providerSigType">Type</button>
+            </div>
+            <div id="providerSigDraw" class="sig-panel active">
+            <div class="signature-pad-wrapper">
+              <canvas class="signature-pad" id="providerSignaturePad" width="700" height="130"></canvas>
+              <button type="button" class="btn-clear-sig" id="clearSignature">Clear</button>
+            </div>
+            </div>
+            <div id="providerSigType" class="sig-panel">
+              <input type="text" id="typedProviderSignature" placeholder="Type provider signature">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="section-title">Billing and Insurance Information</h2>
+        <div class="form-row checkbox-row">
+          <label><input type="checkbox" id="medicare"> Medicare</label>
+          <label><input type="checkbox" id="medicaid"> Medicaid</label>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="insuranceName">Insurance Name</label><input type="text" id="insuranceName"></div>
+          <div class="form-group"><label for="policyNumber">Policy Number</label><input type="text" id="policyNumber"></div>
+          <div class="form-group"><label for="groupNumber">Group No.</label><input type="text" id="groupNumber"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width"><label for="diagnosisCodes">Diagnosis Codes</label><input type="text" id="diagnosisCodes"></div>
+        </div>
+      </section>
+
+      <section class="form-section"><h2 class="section-title">Reason for Mobile X-Ray</h2><div id="reasonFields" class="checkbox-grid compact"></div></section>
+
+      <div class="section-row">
+        <section class="form-section"><h2 class="section-title">X-Ray Order</h2><div id="xrayFields" class="checkbox-grid"></div></section>
+        <section class="form-section"><h2 class="section-title">Ultrasound Order</h2><div id="ultrasoundFields" class="checkbox-grid"></div></section>
+      </div>
+
+      <section class="form-section">
+        <h2 class="section-title">Lab Test Selection</h2>
+        <div class="test-columns">
+          <div><h3>Urine Drug Testing</h3><div id="urineFields" class="checkbox-grid"></div></div>
+          <div><h3>Urine Analysis / Molecular</h3><div id="molecularFields" class="checkbox-grid"></div></div>
+          <div><h3>Blood Panel</h3><div id="bloodFields" class="checkbox-grid dense"></div></div>
+          <div><h3>Wellness and Allergy</h3><div id="wellnessFields" class="checkbox-grid"></div></div>
+        </div>
+        <div class="form-row other-row">
+          <div class="form-group"><label for="otherLabTest">Other (Please specify)</label><textarea id="otherLabTest" rows="4"></textarea></div>
+          <div class="form-group"><label for="specialInstructions">Special Instructions</label><textarea id="specialInstructions" rows="4"></textarea></div>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="button" id="btnGeneratePDF" class="btn btn-primary" disabled>Generate Filled PDF</button>
+        <button type="reset" class="btn btn-secondary">Clear Form</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="app.js?v=14"></script>
+</body>
+</html>
