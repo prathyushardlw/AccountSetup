@@ -13,11 +13,11 @@
   let signaturePad = null;
 
   const TEXT_FIELDS = {
-    practiceName: { x: 575, top: 124, size: TEXT_SIZE, maxWidth: 300 },
-    physician: { x: 970, top: 124, size: TEXT_SIZE, maxWidth: 170 },
-    npi: { x: 1190, top: 124, size: SMALL_TEXT_SIZE, maxWidth: 130 },
-    phoneNo: { x: 535, top: 171, size: SMALL_TEXT_SIZE, maxWidth: 260 },
-    practiceAddress: { x: 865, top: 171, size: SMALL_TEXT_SIZE, maxWidth: 450 },
+    practiceName: { x: 575, top: 116, size: TEXT_SIZE, maxWidth: 300 },
+    physician: { x: 970, top: 116, size: TEXT_SIZE, maxWidth: 170 },
+    npi: { x: 1190, top: 116, size: SMALL_TEXT_SIZE, maxWidth: 130 },
+    phoneNo: { x: 546, top: 157, size: SMALL_TEXT_SIZE, maxWidth: 260 },
+    practiceAddress: { x: 865, top: 157, size: SMALL_TEXT_SIZE, maxWidth: 450 },
     dateOfService: { x: 1040, top: 293, size: SMALL_TEXT_SIZE, maxWidth: 190 },
     firstName: { x: 220, top: 339, size: TEXT_SIZE, maxWidth: 250 },
     lastName: { x: 650, top: 339, size: TEXT_SIZE, maxWidth: 220 },
@@ -29,8 +29,8 @@
     policyNumber: { x: 190, top: 548, size: TEXT_SIZE, maxWidth: 450 },
     groupNumber: { x: 790, top: 548, size: TEXT_SIZE, maxWidth: 280 },
     diagnosisCodes: { x: 230, top: 577, size: TEXT_SIZE, maxWidth: 1020 },
-    otherLabTest: { x: 1145, top: 1449, size: SMALL_TEXT_SIZE, maxWidth: 170, lineHeight: 18 },
-    specialInstructions: { x: 220, top: 1626, size: SMALL_TEXT_SIZE, maxWidth: 1050, lineHeight: 18 }
+    otherLabTest: { x: 1054, top: 1449, size: SMALL_TEXT_SIZE, maxWidth: 170, lineHeight: 18 },
+    specialInstructions: { x: 231, top: 1626, size: SMALL_TEXT_SIZE, maxWidth: 1050, lineHeight: 18 }
   };
 
   // Checkbox coordinates - extracted from source PDF (1364 x 1670) using PyMuPDF
@@ -61,45 +61,43 @@
     { id: 'xrayElbowR', x: 308, top: 819 }, { id: 'xrayFemurR', x: 308, top: 846 }, { id: 'xrayForearmR', x: 308, top: 872 },
     { id: 'xrayHandR', x: 309, top: 921 }, { id: 'xrayHipR', x: 309, top: 945 },
     
-    // X-Ray Column 2 (x=362)
-    { id: 'xrayHipPelvis', x: 362, top: 674 },
-    { id: 'xrayHipPelvisL', x: 596, top: 674 }, { id: 'xrayHipPelvisR', x: 625, top: 674 },
+    // X-Ray Column 2 (x=370)
+    { id: 'xrayHipPelvis', x: 370, top: 682 },
+    { id: 'xrayHipPelvisL', x: 595, top: 682 }, { id: 'xrayHipPelvisR', x: 640, top: 680 },
     { id: 'xrayBilateralHipPelvis', x: 362, top: 700 },
-    { id: 'xrayHumerus', x: 362, top: 723 }, { id: 'xrayKnee', x: 362, top: 747 },
+    { id: 'xrayHumerus', x: 370, top: 730 },
+    { id: 'xrayHumerusL', x: 595, top: 728 }, { id: 'xrayHumerusR', x: 640, top: 728 },
+    { id: 'xrayKnee', x: 369, top: 753 },
+    { id: 'xrayKneeL', x: 594, top: 752 }, { id: 'xrayKneeR', x: 640, top: 752 },
     { id: 'xrayMandible', x: 362, top: 771 }, { id: 'xrayNasalBones', x: 362, top: 794 },
-    { id: 'xrayPelvis', x: 362, top: 818 }, { id: 'xrayRibs', x: 362, top: 846 }, { id: 'xrayShoulder', x: 362, top: 872 },
+    { id: 'xrayPelvis', x: 362, top: 818 },
+    { id: 'xrayRibs', x: 370, top: 852 },
+    { id: 'xrayRibsL', x: 555, top: 848 }, { id: 'xrayRibsR', x: 595, top: 849 }, { id: 'xrayRibsB', x: 640, top: 848 },
+    { id: 'xrayShoulder', x: 369, top: 878 },
+    { id: 'xrayShoulderL', x: 556, top: 877 }, { id: 'xrayShoulderR', x: 596, top: 878 }, { id: 'xrayShoulderB', x: 640, top: 879 },
     { id: 'xraySpineCervical', x: 362, top: 895 }, { id: 'xraySpineThoracic', x: 362, top: 919 }, { id: 'xraySpineLumbar', x: 362, top: 942 },
     
-    // X-Ray Column 2 - L/R checkboxes for Humerus
-    { id: 'xrayHumerusL', x: 593, top: 723 }, { id: 'xrayHumerusR', x: 622, top: 723 },
-    // X-Ray Column 2 - L/R checkboxes for Knee
-    { id: 'xrayKneeL', x: 593, top: 746 }, { id: 'xrayKneeR', x: 622, top: 746 },
-    // X-Ray Column 2 - L/R/B checkboxes for Ribs
-    { id: 'xrayRibsL', x: 553, top: 844 }, { id: 'xrayRibsR', x: 578, top: 844 }, { id: 'xrayRibsB', x: 609, top: 844 },
-    // X-Ray Column 2 - L/R/B checkboxes for Shoulder
-    { id: 'xrayShoulderL', x: 553, top: 871 }, { id: 'xrayShoulderR', x: 578, top: 872 }, { id: 'xrayShoulderB', x: 609, top: 871 },
     
-    // X-Ray Column 3 (x=676)
+    
+    // X-Ray Column 3 (x=685)
     { id: 'xraySacrum', x: 676, top: 674 }, { id: 'xraySinus', x: 676, top: 698 }, { id: 'xraySkull', x: 676, top: 721 },
-    { id: 'xrayToes', x: 676, top: 743 },
-    { id: 'xrayWrist', x: 676, top: 769 },
-    { id: 'xrayFoot', x: 676, top: 793 },
-    { id: 'xrayTibFib', x: 676, top: 816 },
+    { id: 'xrayToes', x: 685, top: 750 },
+    { id: 'xrayToesL', x: 846, top: 748 }, { id: 'xrayToesR', x: 891, top: 748 }, { id: 'xrayToesB', x: 936, top: 746 },
+    { id: 'xrayWrist', x: 685, top: 775 },
+    { id: 'xrayWristL', x: 849, top: 773 }, { id: 'xrayWristR', x: 891, top: 772 }, { id: 'xrayWristB', x: 936, top: 774 },
+    { id: 'xrayFoot', x: 685, top: 797 },
+    { id: 'xrayFootL', x: 892, top: 799 }, { id: 'xrayFootR', x: 937, top: 798 },
+    { id: 'xrayTibFib', x: 685, top: 822 },
+    { id: 'xrayTibFibL', x: 891, top: 822 }, { id: 'xrayTibFibR', x: 937, top: 822 },
     { id: 'xrayOther', x: 676, top: 841 },
     
-    // Ultrasound L/R/B options (x=839-927)
-    { id: 'usArterialLowerL', x: 839, top: 742 }, { id: 'usArterialLowerR', x: 868, top: 742 }, { id: 'usArterialLowerB', x: 883, top: 742 },
-    { id: 'usArterialAbiL', x: 839, top: 768 }, { id: 'usArterialAbiR', x: 868, top: 768 }, { id: 'usArterialAbiB', x: 883, top: 767 },
-    { id: 'usVenousUpperL', x: 883, top: 793 }, { id: 'usVenousUpperR', x: 913, top: 793 },
-    { id: 'usVenousLowerL', x: 883, top: 816 }, { id: 'usVenousLowerR', x: 913, top: 816 },
-    
-    // Ultrasound Column (x=971)
-    { id: 'usAdultEcho', x: 971, top: 674 }, { id: 'usCarotid', x: 971, top: 697 },
-    { id: 'usArterialUpper', x: 971, top: 720 }, { id: 'usArterialLower', x: 971, top: 743 },
-    { id: 'usArterialAbi', x: 971, top: 768 }, { id: 'usVenousUpper', x: 971, top: 794 },
-    { id: 'usVenousLower', x: 971, top: 819 }, { id: 'usRenal', x: 971, top: 844 },
-    { id: 'usAbdominal', x: 971, top: 870 }, { id: 'usPelvic', x: 971, top: 895 },
-    { id: 'usThyroid', x: 971, top: 920 }, { id: 'usAortaIvc', x: 971, top: 944 },
+    // Ultrasound Column (moved 2mm left, 1mm up total)
+    { id: 'usAdultEcho', x: 973, top: 676 }, { id: 'usCarotid', x: 973, top: 700 },
+    { id: 'usArterialUpper', x: 972, top: 720 }, { id: 'usArterialLower', x: 972, top: 745 },
+    { id: 'usArterialAbi', x: 974, top: 770 }, { id: 'usVenousUpper', x: 974, top: 794 },
+    { id: 'usVenousLower', x: 972, top: 820 }, { id: 'usRenal', x: 975, top: 846 },
+    { id: 'usAbdominal', x: 972, top: 872 }, { id: 'usPelvic', x: 972, top: 897 },
+    { id: 'usThyroid', x: 974, top: 923 }, { id: 'usAortaIvc', x: 974, top: 947 },
     
     // Wellness panels (x=1011)
     { id: 'wellnessFemale', x: 1011, top: 1007 }, { id: 'wellnessMen', x: 1011, top: 1195 },
@@ -109,7 +107,7 @@
     { id: 'screenConfirmationEtg', x: 71, top: 1093 }, { id: 'urinalysis', x: 71, top: 1112 },
     
     // Molecular Testing column (x=70-95)
-    { id: 'uaUtiPcr', x: 70, top: 1165 }, { id: 'uaUtiWithoutStd', x: 95, top: 1212 }, { id: 'uaUtiWithStd', x: 95, top: 1234 },
+    { id: 'uaUtiPcr', x: 70, top: 1165 }, { id: 'uaUtiPcrWithoutStd', x: 95, top: 1212 }, { id: 'uaUtiPcrWithStd', x: 95, top: 1234 },
     { id: 'respiratoryPanel', x: 70, top: 1266 }, { id: 'woundPanel', x: 70, top: 1312 },
     { id: 'nailPanel', x: 70, top: 1343 }, { id: 'giPanel', x: 70, top: 1373 }, { id: 'pgxComprehensive', x: 70, top: 1444 },
     
@@ -181,8 +179,8 @@
     { id: 'vitaminB12', x: 827, top: 1411 }, { id: 'vitaminD', x: 827, top: 1428 },
     { id: 'vzvIgG', x: 827, top: 1445 }, { id: 'wbc', x: 827, top: 1461 },
     { id: 'albuminCreatinineRandomUrine', x: 827, top: 1490 },
-    { id: 'allergyTestPanel', x: 827, top: 1529 }, { id: 'inhalantAllergens', x: 849, top: 1546 },
-    { id: 'foodAllergens25', x: 849, top: 1561 }
+    { id: 'allergyTestPanel', x: 827, top: 1529 }, { id: 'allergyTestPanelInhalant', x: 849, top: 1546 },
+    { id: 'allergyTestPanelFood', x: 849, top: 1561 }
   ];
 
   const CHECKBOX_GROUPS = {
@@ -209,19 +207,19 @@
       ['xraySpineCervical', 'Spine - Cervical'], ['xraySpineThoracic', 'Spine - Thoracic'], ['xraySpineLumbar', 'Spine - Lumbar'],
       ['xraySacrum', 'Sacrum/Coccyx'],
       ['xraySinus', 'Sinus Series'], ['xraySkull', 'Skull'],
-      ['xrayToes', 'Toes 2V'],
-      ['xrayWrist', 'Wrist 2V/3V'],
-      ['xrayFoot', 'Foot X-Ray'],
-      ['xrayTibFib', 'Tib/Fib X-Ray'],
+      ['xrayToes', 'Toes 2V'], ['xrayToesL', 'Toes - L'], ['xrayToesR', 'Toes - R'], ['xrayToesB', 'Toes - B'],
+      ['xrayWrist', 'Wrist 2V/3V'], ['xrayWristL', 'Wrist - L'], ['xrayWristR', 'Wrist - R'], ['xrayWristB', 'Wrist - B'],
+      ['xrayFoot', 'Foot X-Ray'], ['xrayFootL', 'Foot - L'], ['xrayFootR', 'Foot - R'],
+      ['xrayTibFib', 'Tib/Fib X-Ray'], ['xrayTibFibL', 'Tib/Fib - L'], ['xrayTibFibR', 'Tib/Fib - R'],
       ['xrayOther', 'Other X-Ray']
     ],
     ultrasoundFields: [
       ['usAdultEcho', 'Adult Echocardiogram'], ['usCarotid', 'Carotid Doppler'],
       ['usArterialUpper', 'Arterial Doppler Upper Extremity'],
-      ['usArterialLower', 'Arterial Doppler Lower Extremity'], ['usArterialLowerL', 'Arterial Lower - L'], ['usArterialLowerR', 'Arterial Lower - R'], ['usArterialLowerB', 'Arterial Lower - B'],
-      ['usArterialAbi', 'Arterial Doppler with ABI / Seg Press'], ['usArterialAbiL', 'Arterial ABI - L'], ['usArterialAbiR', 'Arterial ABI - R'], ['usArterialAbiB', 'Arterial ABI - B'],
-      ['usVenousUpper', 'Venous Doppler Upper Extremity'], ['usVenousUpperL', 'Venous Upper - L'], ['usVenousUpperR', 'Venous Upper - R'],
-      ['usVenousLower', 'Venous Doppler Lower Extremity'], ['usVenousLowerL', 'Venous Lower - L'], ['usVenousLowerR', 'Venous Lower - R'],
+      ['usArterialLower', 'Arterial Doppler Lower Extremity'],
+      ['usArterialAbi', 'Arterial Doppler with ABI / Seg Press'],
+      ['usVenousUpper', 'Venous Doppler Upper Extremity'],
+      ['usVenousLower', 'Venous Doppler Lower Extremity'],
       ['usRenal', 'Renal / Renal Artery Doppler'], ['usAbdominal', 'Abdominal Ultrasound'],
       ['usPelvic', 'Pelvic Ultrasound'], ['usThyroid', 'Thyroid Ultrasound'], ['usAortaIvc', 'Aorta/IVC Duplex Doppler']
     ],
@@ -453,9 +451,39 @@
   }
 
   function drawCheck(page, field, font, color) {
-    // Offset to center X mark inside checkbox square (checkbox ~17x16, X text ~10px)
-    // Add ~4 to x and ~12 to top to position the X baseline in the center
-    const p = sourceToPdf(page, field.x + 4, field.top + 12);
+    // Special offsets for X-ray checkboxes
+    const xrayMainCol2 = [
+      'xrayHipPelvis', 'xrayHumerus', 'xrayKnee', 'xrayRibs', 'xrayShoulder'
+    ];
+    const xrayMainCol3 = [
+      'xrayToes', 'xrayWrist', 'xrayFoot', 'xrayTibFib'
+    ];
+    const xrayLRBFields = [
+      'xrayHipPelvisL', 'xrayHipPelvisR',
+      'xrayHumerusL', 'xrayHumerusR',
+      'xrayKneeL', 'xrayKneeR',
+      'xrayRibsL', 'xrayRibsR', 'xrayRibsB',
+      'xrayShoulderL', 'xrayShoulderR', 'xrayShoulderB',
+      'xrayToesL', 'xrayToesR', 'xrayToesB',
+      'xrayWristL', 'xrayWristR', 'xrayWristB',
+      'xrayFootL', 'xrayFootR',
+      'xrayTibFibL', 'xrayTibFibR'
+    ];
+    
+    let offsetX = 4, offsetY = 12; // default offset
+    if (xrayMainCol2.includes(field.id)) {
+      offsetX = 1;
+      offsetY = 9;
+    } else if (xrayMainCol3.includes(field.id)) {
+      // Move 1mm left (~2.8pt) and 0.4mm up (~1.1pt)
+      offsetX = -2;
+      offsetY = 10;
+    } else if (xrayLRBFields.includes(field.id)) {
+      offsetX = -2;
+      offsetY = 6;
+    }
+    
+    const p = sourceToPdf(page, field.x + offsetX, field.top + offsetY);
     page.drawText('X', { x: p.x, y: p.y, size: CHECK_SIZE, font, color });
   }
 
@@ -546,12 +574,9 @@
       if (!response.ok) throw new Error('PDF not found');
       pdfTemplateBytes = await response.arrayBuffer();
       generateBtn.disabled = false;
-      byId('pdfStatus').textContent = 'Loaded RMDS REQ Form April 10.pdf.';
     } catch (error) {
       console.error(error);
-      const status = byId('pdfStatus');
-      status.textContent = 'Could not load the PDF template. Place "' + PDF_TEMPLATE + '" in this folder and refresh.';
-      status.classList.add('error');
+      alert('Could not load the PDF template. Place "' + PDF_TEMPLATE + '" in this folder and refresh.');
     }
   }
 
