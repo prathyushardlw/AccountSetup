@@ -7,7 +7,7 @@
   const SOURCE_HEIGHT = 1670;
   const TEXT_SIZE = 20;
   const SMALL_TEXT_SIZE = 16;
-  const CHECK_SIZE = 12;
+  const CHECK_SIZE = 14;
 
   let pdfTemplateBytes = null;
   let signaturePad = null;
@@ -28,48 +28,254 @@
     insuranceName: { x: 530, top: 507, size: SMALL_TEXT_SIZE, maxWidth: 500 },
     policyNumber: { x: 190, top: 548, size: TEXT_SIZE, maxWidth: 450 },
     groupNumber: { x: 790, top: 548, size: TEXT_SIZE, maxWidth: 280 },
-    diagnosisCodes: { x: 200, top: 589, size: TEXT_SIZE, maxWidth: 1050 },
+    diagnosisCodes: { x: 230, top: 577, size: TEXT_SIZE, maxWidth: 1020 },
     otherLabTest: { x: 1145, top: 1449, size: SMALL_TEXT_SIZE, maxWidth: 170, lineHeight: 18 },
-    specialInstructions: { x: 165, top: 1626, size: SMALL_TEXT_SIZE, maxWidth: 1110, lineHeight: 18 }
+    specialInstructions: { x: 220, top: 1626, size: SMALL_TEXT_SIZE, maxWidth: 1050, lineHeight: 18 }
   };
 
-  // Checkbox coordinates - measured from source PDF (1364 x 1670)
-  // The drawCheck function adds +4 to x and +12 to top for centering
+  // Checkbox coordinates - extracted from source PDF (1364 x 1670) using PyMuPDF
+  // These are the top-left corner coordinates of checkbox rectangles
+  // The drawCheck function adds offsets to center the X mark
   const CHECK_FIELDS = [
-    // Billing checkboxes
-    { id: 'medicare', x: 47, top: 497 }, { id: 'medicaid', x: 166, top: 497 },
-    // Gender checkboxes
-    { id: 'genderM', x: 1106, top: 337 }, { id: 'genderF', x: 1158, top: 337 },
-    // Reason for Mobile X-Ray row
-    { id: 'homebound', x: 579, top: 632 }, { id: 'acuteCondition', x: 688, top: 632 }, { id: 'nonAmbulatory', x: 800, top: 632 }, { id: 'medicalConditionUnstable', x: 920, top: 632 },
-    // X-Ray Column 1
-    { id: 'xrayAbdomen2v', x: 44, top: 678 }, { id: 'xrayAbdomenKub', x: 44, top: 700 }, { id: 'xrayAnkle', x: 44, top: 723 }, { id: 'xrayToes', x: 44, top: 745 }, { id: 'xrayChest1v', x: 44, top: 768 }, { id: 'xrayChestEkg', x: 44, top: 790 }, { id: 'xrayClavicle', x: 44, top: 812 }, { id: 'xrayElbow', x: 44, top: 835 }, { id: 'xrayFemur', x: 44, top: 857 }, { id: 'xrayForearm', x: 44, top: 880 }, { id: 'xrayFacialBones', x: 44, top: 902 }, { id: 'xrayHand', x: 44, top: 925 }, { id: 'xrayHip', x: 44, top: 947 },
-    // X-Ray Column 2
-    { id: 'xrayHipPelvis', x: 258, top: 678 }, { id: 'xrayBilateralHipPelvis', x: 258, top: 700 }, { id: 'xrayHumerus', x: 258, top: 723 }, { id: 'xrayKnee', x: 258, top: 768 }, { id: 'xrayMandible', x: 258, top: 790 }, { id: 'xrayNasalBones', x: 258, top: 812 }, { id: 'xrayPelvis', x: 258, top: 835 }, { id: 'xrayRibs', x: 258, top: 857 }, { id: 'xrayShoulder', x: 258, top: 880 }, { id: 'xraySpineCervical', x: 258, top: 902 }, { id: 'xraySpineThoracic', x: 258, top: 925 }, { id: 'xraySpineLumbar', x: 258, top: 947 },
-    // X-Ray Column 3
-    { id: 'xraySacrum', x: 505, top: 678 }, { id: 'xraySinus', x: 505, top: 700 }, { id: 'xraySkull', x: 505, top: 723 }, { id: 'xrayWrist', x: 505, top: 790 }, { id: 'xrayFoot', x: 505, top: 812 }, { id: 'xrayTibFib', x: 505, top: 835 }, { id: 'xrayOther', x: 505, top: 857 },
-    // Ultrasound Column
-    { id: 'usAdultEcho', x: 846, top: 678 }, { id: 'usCarotid', x: 846, top: 700 }, { id: 'usArterialUpper', x: 846, top: 723 }, { id: 'usArterialLower', x: 846, top: 745 }, { id: 'usArterialAbi', x: 846, top: 790 }, { id: 'usVenousUpper', x: 846, top: 812 }, { id: 'usVenousLower', x: 846, top: 835 }, { id: 'usRenal', x: 846, top: 857 }, { id: 'usAbdominal', x: 846, top: 880 }, { id: 'usPelvic', x: 846, top: 902 }, { id: 'usThyroid', x: 846, top: 925 }, { id: 'usAortaIvc', x: 846, top: 947 },
-    // Urine Drug Testing column
-    { id: 'urineDrugScreen', x: 44, top: 1020 }, { id: 'urineDrugConfirmation', x: 44, top: 1041 }, { id: 'screenConfirmationEtg', x: 44, top: 1063 }, { id: 'urinalysis', x: 44, top: 1085 },
-    // Molecular Testing column
-    { id: 'uaUtiNoStd', x: 44, top: 1152 }, { id: 'uaUtiStd', x: 44, top: 1175 }, { id: 'respiratoryPanel', x: 44, top: 1218 }, { id: 'woundPanel', x: 44, top: 1258 }, { id: 'nailPanel', x: 44, top: 1280 }, { id: 'giPanel', x: 44, top: 1303 }, { id: 'pgxComprehensive', x: 44, top: 1360 },
-    // Blood Panel section
-    { id: 'compMetabolicPanel', x: 310, top: 1002 }, { id: 'lipidPanel', x: 310, top: 1025 }, { id: 'hepaticProfile', x: 470, top: 1002 }, { id: 'basicMetabolicPanel', x: 470, top: 1025 }, { id: 'renalPanel', x: 630, top: 1025 }, { id: 'cbcDiff', x: 820, top: 1002 }, { id: 'reticulocyteCount', x: 820, top: 1025 }, { id: 'rheumatoidFactor', x: 820, top: 1048 },
-    // Wellness panels
-    { id: 'wellnessFemale', x: 900, top: 1002 }, { id: 'wellnessMen', x: 900, top: 1133 },
-    // Allergy panels
-    { id: 'allergyInhalant', x: 900, top: 1388 }, { id: 'allergyFood', x: 900, top: 1410 }
+    // Gender checkboxes (top=316)
+    { id: 'genderM', x: 1194, top: 316 }, { id: 'genderF', x: 1252, top: 316 },
+    // Billing checkboxes (top=493)
+    { id: 'medicare', x: 64, top: 493 }, { id: 'medicaid', x: 182, top: 493 }, { id: 'otherInsurance', x: 301, top: 493 },
+    // Reason for Mobile X-Ray row (top=614)
+    { id: 'homebound', x: 341, top: 614 }, { id: 'acuteCondition', x: 449, top: 614 }, { id: 'nonAmbulatory', x: 591, top: 614 }, { id: 'medicalConditionUnstable', x: 736, top: 614 },
+    
+    // X-Ray Column 1 (x=67) - Main checkboxes
+    { id: 'xrayAbdomen2v', x: 67, top: 676 }, { id: 'xrayAbdomenKub', x: 67, top: 699 },
+    { id: 'xrayAnkle', x: 67, top: 723 }, { id: 'xrayChest', x: 67, top: 747 }, { id: 'xrayChestEkg', x: 67, top: 770 },
+    { id: 'xrayClavicle', x: 67, top: 794 }, { id: 'xrayElbow', x: 67, top: 820 }, { id: 'xrayFemur', x: 67, top: 846 },
+    { id: 'xrayForearm', x: 67, top: 871 }, { id: 'xrayFacialBones', x: 67, top: 897 }, { id: 'xrayHand', x: 67, top: 921 },
+    { id: 'xrayHip', x: 67, top: 944 },
+    
+    // X-Ray Column 1 - L checkboxes (x=256)
+    { id: 'xrayAnkleL', x: 256, top: 723 }, { id: 'xrayChest1v', x: 256, top: 746 },
+    { id: 'xrayElbowL', x: 256, top: 818 }, { id: 'xrayFemurL', x: 256, top: 846 }, { id: 'xrayForearmL', x: 256, top: 871 },
+    { id: 'xrayHandL', x: 256, top: 922 }, { id: 'xrayHipL', x: 256, top: 945 },
+    
+    // X-Ray Column 1 - R checkboxes (x=308 or x=309)
+    { id: 'xrayAnkleR', x: 308, top: 723 }, { id: 'xrayChest2v', x: 309, top: 746 },
+    { id: 'xrayElbowR', x: 308, top: 819 }, { id: 'xrayFemurR', x: 308, top: 846 }, { id: 'xrayForearmR', x: 308, top: 872 },
+    { id: 'xrayHandR', x: 309, top: 921 }, { id: 'xrayHipR', x: 309, top: 945 },
+    
+    // X-Ray Column 2 (x=362)
+    { id: 'xrayHipPelvis', x: 362, top: 674 },
+    { id: 'xrayHipPelvisL', x: 596, top: 674 }, { id: 'xrayHipPelvisR', x: 625, top: 674 },
+    { id: 'xrayBilateralHipPelvis', x: 362, top: 700 },
+    { id: 'xrayHumerus', x: 362, top: 723 }, { id: 'xrayKnee', x: 362, top: 747 },
+    { id: 'xrayMandible', x: 362, top: 771 }, { id: 'xrayNasalBones', x: 362, top: 794 },
+    { id: 'xrayPelvis', x: 362, top: 818 }, { id: 'xrayRibs', x: 362, top: 846 }, { id: 'xrayShoulder', x: 362, top: 872 },
+    { id: 'xraySpineCervical', x: 362, top: 895 }, { id: 'xraySpineThoracic', x: 362, top: 919 }, { id: 'xraySpineLumbar', x: 362, top: 942 },
+    
+    // X-Ray Column 2 - L/R checkboxes for Humerus
+    { id: 'xrayHumerusL', x: 593, top: 723 }, { id: 'xrayHumerusR', x: 622, top: 723 },
+    // X-Ray Column 2 - L/R checkboxes for Knee
+    { id: 'xrayKneeL', x: 593, top: 746 }, { id: 'xrayKneeR', x: 622, top: 746 },
+    // X-Ray Column 2 - L/R/B checkboxes for Ribs
+    { id: 'xrayRibsL', x: 553, top: 844 }, { id: 'xrayRibsR', x: 578, top: 844 }, { id: 'xrayRibsB', x: 609, top: 844 },
+    // X-Ray Column 2 - L/R/B checkboxes for Shoulder
+    { id: 'xrayShoulderL', x: 553, top: 871 }, { id: 'xrayShoulderR', x: 578, top: 872 }, { id: 'xrayShoulderB', x: 609, top: 871 },
+    
+    // X-Ray Column 3 (x=676)
+    { id: 'xraySacrum', x: 676, top: 674 }, { id: 'xraySinus', x: 676, top: 698 }, { id: 'xraySkull', x: 676, top: 721 },
+    { id: 'xrayToes', x: 676, top: 743 },
+    { id: 'xrayWrist', x: 676, top: 769 },
+    { id: 'xrayFoot', x: 676, top: 793 },
+    { id: 'xrayTibFib', x: 676, top: 816 },
+    { id: 'xrayOther', x: 676, top: 841 },
+    
+    // Ultrasound L/R/B options (x=839-927)
+    { id: 'usArterialLowerL', x: 839, top: 742 }, { id: 'usArterialLowerR', x: 868, top: 742 }, { id: 'usArterialLowerB', x: 883, top: 742 },
+    { id: 'usArterialAbiL', x: 839, top: 768 }, { id: 'usArterialAbiR', x: 868, top: 768 }, { id: 'usArterialAbiB', x: 883, top: 767 },
+    { id: 'usVenousUpperL', x: 883, top: 793 }, { id: 'usVenousUpperR', x: 913, top: 793 },
+    { id: 'usVenousLowerL', x: 883, top: 816 }, { id: 'usVenousLowerR', x: 913, top: 816 },
+    
+    // Ultrasound Column (x=971)
+    { id: 'usAdultEcho', x: 971, top: 674 }, { id: 'usCarotid', x: 971, top: 697 },
+    { id: 'usArterialUpper', x: 971, top: 720 }, { id: 'usArterialLower', x: 971, top: 743 },
+    { id: 'usArterialAbi', x: 971, top: 768 }, { id: 'usVenousUpper', x: 971, top: 794 },
+    { id: 'usVenousLower', x: 971, top: 819 }, { id: 'usRenal', x: 971, top: 844 },
+    { id: 'usAbdominal', x: 971, top: 870 }, { id: 'usPelvic', x: 971, top: 895 },
+    { id: 'usThyroid', x: 971, top: 920 }, { id: 'usAortaIvc', x: 971, top: 944 },
+    
+    // Wellness panels (x=1011)
+    { id: 'wellnessFemale', x: 1011, top: 1007 }, { id: 'wellnessMen', x: 1011, top: 1195 },
+    
+    // Urine Drug Testing column (x=71)
+    { id: 'urineDrugScreen', x: 71, top: 1052 }, { id: 'urineDrugConfirmation', x: 71, top: 1073 },
+    { id: 'screenConfirmationEtg', x: 71, top: 1093 }, { id: 'urinalysis', x: 71, top: 1112 },
+    
+    // Molecular Testing column (x=70-95)
+    { id: 'uaUtiPcr', x: 70, top: 1165 }, { id: 'uaUtiWithoutStd', x: 95, top: 1212 }, { id: 'uaUtiWithStd', x: 95, top: 1234 },
+    { id: 'respiratoryPanel', x: 70, top: 1266 }, { id: 'woundPanel', x: 70, top: 1312 },
+    { id: 'nailPanel', x: 70, top: 1343 }, { id: 'giPanel', x: 70, top: 1373 }, { id: 'pgxComprehensive', x: 70, top: 1444 },
+    
+    // Blood Panel Column 1 (x=381-382)
+    { id: 'compMetabolicPanel', x: 381, top: 1027 }, { id: 'lipidPanel', x: 380, top: 1044 },
+    { id: 'albumin', x: 382, top: 1066 }, { id: 'aldosterone', x: 382, top: 1083 },
+    { id: 'alkPhos', x: 382, top: 1101 }, { id: 'alt', x: 382, top: 1119 },
+    { id: 'amylase', x: 382, top: 1136 }, { id: 'antiHav', x: 382, top: 1155 },
+    { id: 'antiHavIgm', x: 382, top: 1172 }, { id: 'antiHbc', x: 382, top: 1190 },
+    { id: 'antiHbcIgm', x: 382, top: 1208 }, { id: 'antiHbs', x: 382, top: 1225 },
+    { id: 'antiHcv', x: 382, top: 1243 }, { id: 'antiTg', x: 382, top: 1261 },
+    { id: 'antiTpo', x: 382, top: 1279 }, { id: 'aptt', x: 382, top: 1297 },
+    { id: 'ast', x: 382, top: 1315 }, { id: 'bilirubinDirect', x: 382, top: 1332 },
+    { id: 'bilirubinTotal', x: 382, top: 1350 }, { id: 'bun', x: 382, top: 1368 },
+    { id: 'cbcWithDiff', x: 382, top: 1386 }, { id: 'c3', x: 382, top: 1403 },
+    { id: 'c4', x: 382, top: 1421 }, { id: 'ca125', x: 382, top: 1439 },
+    { id: 'ca153', x: 382, top: 1457 }, { id: 'ca199', x: 382, top: 1475 },
+    { id: 'calcium', x: 382, top: 1493 }, { id: 'chloride', x: 382, top: 1511 },
+    { id: 'cholesterolTotal', x: 382, top: 1528 }, { id: 'ck', x: 382, top: 1546 },
+    { id: 'co2', x: 382, top: 1563 }, { id: 'cortisolAm', x: 382, top: 1582 },
+    
+    // Blood Panel Column 2 (x=519-534)
+    { id: 'hepaticProfile', x: 534, top: 1027 }, { id: 'basicMetabolicPanel', x: 534, top: 1044 },
+    { id: 'cortisolPm', x: 519, top: 1066 }, { id: 'cPeptide', x: 519, top: 1083 },
+    { id: 'creatinine', x: 519, top: 1101 }, { id: 'dheaS', x: 519, top: 1119 },
+    { id: 'digoxin', x: 519, top: 1136 }, { id: 'eaIgG', x: 519, top: 1155 },
+    { id: 'ebnaIgG', x: 519, top: 1172 }, { id: 'ebvIgM', x: 519, top: 1190 },
+    { id: 'esr', x: 519, top: 1208 }, { id: 'estradiol', x: 519, top: 1225 },
+    { id: 'ferritin', x: 519, top: 1243 }, { id: 'folate', x: 519, top: 1261 },
+    { id: 'freeT3', x: 519, top: 1297 },
+    { id: 'freeT4', x: 519, top: 1315 }, { id: 'fsh', x: 519, top: 1332 },
+    { id: 'ggt', x: 519, top: 1350 }, { id: 'glucose', x: 519, top: 1368 },
+    { id: 'hPyloriIgG', x: 519, top: 1385 }, { id: 'hbsAg', x: 519, top: 1421 },
+    { id: 'hcgB', x: 519, top: 1439 }, { id: 'hdl', x: 519, top: 1457 },
+    { id: 'hematocrit', x: 519, top: 1475 }, { id: 'hemoglobin', x: 519, top: 1493 },
+    { id: 'hepatitis', x: 519, top: 1511 }, { id: 'hgbA1c', x: 519, top: 1528 },
+    { id: 'hivScreening', x: 519, top: 1546 }, { id: 'hsCrp', x: 519, top: 1563 },
+    { id: 'hsv1IgG', x: 519, top: 1582 },
+    
+    // Blood Panel Column 3 (x=668-691)
+    { id: 'renalPanel', x: 691, top: 1044 }, { id: 'hsv2IgG', x: 668, top: 1066 },
+    { id: 'igA', x: 668, top: 1083 }, { id: 'igG', x: 668, top: 1101 },
+    { id: 'igM', x: 668, top: 1119 }, { id: 'insulin', x: 668, top: 1136 },
+    { id: 'ironTibc', x: 668, top: 1155 }, { id: 'lactate', x: 668, top: 1172 },
+    { id: 'ldh', x: 668, top: 1190 }, { id: 'ldl', x: 668, top: 1208 },
+    { id: 'lh', x: 668, top: 1225 }, { id: 'lipase', x: 668, top: 1243 },
+    { id: 'lithium', x: 668, top: 1261 }, { id: 'magnesium', x: 668, top: 1279 },
+    { id: 'measlesIgG', x: 668, top: 1297 }, { id: 'mononucleosis', x: 668, top: 1314 },
+    { id: 'mumpsIgG', x: 668, top: 1350 }, { id: 'phosphorus', x: 668, top: 1368 },
+    { id: 'potassium', x: 668, top: 1386 }, { id: 'prealbumin', x: 668, top: 1403 },
+    { id: 'proBnpII', x: 668, top: 1421 }, { id: 'procalcitonin', x: 668, top: 1439 },
+    { id: 'progesterone', x: 668, top: 1457 }, { id: 'prolactin', x: 668, top: 1475 },
+    { id: 'psaFree', x: 668, top: 1493 }, { id: 'psaTotal', x: 668, top: 1511 },
+    { id: 'pt', x: 668, top: 1528 }, { id: 'pth', x: 668, top: 1546 },
+    { id: 'quantiferonTbGold', x: 668, top: 1565 },
+    
+    // Blood Panel Column 4 (x=827)
+    { id: 'reticulocyteCount', x: 827, top: 1031 }, { id: 'rheumatoidFactor', x: 827, top: 1048 },
+    { id: 'rubellaIgG', x: 827, top: 1065 }, { id: 'rubellaIgM', x: 827, top: 1080 },
+    { id: 'shbg', x: 827, top: 1097 }, { id: 'sodium', x: 827, top: 1114 },
+    { id: 'syphilis', x: 827, top: 1131 }, { id: 'testosterone', x: 827, top: 1148 },
+    { id: 'totalProtein', x: 827, top: 1163 }, { id: 'totalPsa', x: 827, top: 1180 },
+    { id: 'totalT3', x: 827, top: 1197 }, { id: 'totalT4', x: 827, top: 1212 },
+    { id: 'transferrin', x: 827, top: 1230 }, { id: 'triglycerides', x: 827, top: 1245 },
+    { id: 'tsh', x: 827, top: 1262 }, { id: 'tUptake', x: 827, top: 1279 },
+    { id: 'uibc', x: 827, top: 1296 }, { id: 'uricAcid', x: 827, top: 1312 },
+    { id: 'urineMicroalbumin', x: 827, top: 1329 }, { id: 'valproicAcid', x: 827, top: 1363 },
+    { id: 'vancomycin', x: 827, top: 1379 }, { id: 'vcaIgG', x: 827, top: 1396 },
+    { id: 'vitaminB12', x: 827, top: 1411 }, { id: 'vitaminD', x: 827, top: 1428 },
+    { id: 'vzvIgG', x: 827, top: 1445 }, { id: 'wbc', x: 827, top: 1461 },
+    { id: 'albuminCreatinineRandomUrine', x: 827, top: 1490 },
+    { id: 'allergyTestPanel', x: 827, top: 1529 }, { id: 'inhalantAllergens', x: 849, top: 1546 },
+    { id: 'foodAllergens25', x: 849, top: 1561 }
   ];
 
   const CHECKBOX_GROUPS = {
     reasonFields: [['homebound', 'Homebound'], ['acuteCondition', 'Acute Condition'], ['nonAmbulatory', 'Non Ambulatory'], ['medicalConditionUnstable', 'Medical Condition Unstable']],
-    xrayFields: [['xrayAbdomen2v', 'Abdomen 2V'], ['xrayAbdomenKub', 'Abdomen (KUB)'], ['xrayAnkle', 'Ankle 2V/3V'], ['xrayToes', 'Toes 2V'], ['xrayChest1v', 'Chest 1V / 2V'], ['xrayChestEkg', 'Chest X-Ray with EKG'], ['xrayClavicle', 'Clavicle'], ['xrayElbow', 'Elbow 2V/3V'], ['xrayFemur', 'Femur 2V'], ['xrayForearm', 'Forearm 2V/3V'], ['xrayFacialBones', 'Facial Bones'], ['xrayHand', 'Hand 2V/3V'], ['xrayHip', 'Hip 2V'], ['xrayHipPelvis', 'Hip with Pelvis'], ['xrayBilateralHipPelvis', 'Bilateral Hip with Pelvis'], ['xrayHumerus', 'Humerus 2V'], ['xrayKnee', 'Knee 2V/3V'], ['xrayMandible', 'Mandible 3V/4V'], ['xrayNasalBones', 'Nasal Bones 3V'], ['xrayPelvis', 'Pelvis'], ['xrayRibs', 'Ribs 2V'], ['xrayShoulder', 'Shoulder 2V'], ['xraySpineCervical', 'Spine - Cervical'], ['xraySpineThoracic', 'Spine - Thoracic'], ['xraySpineLumbar', 'Spine - Lumbar'], ['xraySacrum', 'Sacrum/Coccyx'], ['xraySinus', 'Sinus Series'], ['xraySkull', 'Skull'], ['xrayWrist', 'Wrist 2V/3V'], ['xrayFoot', 'Foot X-Ray'], ['xrayTibFib', 'Tib/Fib X-Ray'], ['xrayOther', 'Other X-Ray']],
-    ultrasoundFields: [['usAdultEcho', 'Adult Echocardiogram'], ['usCarotid', 'Carotid Doppler'], ['usArterialUpper', 'Arterial Doppler Upper Extremity'], ['usArterialLower', 'Arterial Doppler Lower Extremity'], ['usArterialAbi', 'Arterial Doppler with ABI / Seg Press'], ['usVenousUpper', 'Venous Doppler Upper Extremity'], ['usVenousLower', 'Venous Doppler Lower Extremity'], ['usRenal', 'Renal / Renal Artery Doppler'], ['usAbdominal', 'Abdominal Ultrasound'], ['usPelvic', 'Pelvic Ultrasound'], ['usThyroid', 'Thyroid Ultrasound'], ['usAortaIvc', 'Aorta/IVC Duplex Doppler']],
+    xrayFields: [
+      ['xrayAbdomen2v', 'Abdomen 2V'], ['xrayAbdomenKub', 'Abdomen (KUB)'],
+      ['xrayAnkle', 'Ankle 2V/3V'], ['xrayAnkleL', 'Ankle - L'], ['xrayAnkleR', 'Ankle - R'],
+      ['xrayChest', 'Chest'], ['xrayChest1v', 'Chest 1V'], ['xrayChest2v', 'Chest 2V'],
+      ['xrayChestEkg', 'Chest X-Ray with EKG'],
+      ['xrayClavicle', 'Clavicle'],
+      ['xrayElbow', 'Elbow 2V/3V'], ['xrayElbowL', 'Elbow - L'], ['xrayElbowR', 'Elbow - R'],
+      ['xrayFemur', 'Femur 2V'], ['xrayFemurL', 'Femur - L'], ['xrayFemurR', 'Femur - R'],
+      ['xrayForearm', 'Forearm 2V/3V'], ['xrayForearmL', 'Forearm - L'], ['xrayForearmR', 'Forearm - R'],
+      ['xrayFacialBones', 'Facial Bones'],
+      ['xrayHand', 'Hand 2V/3V'], ['xrayHandL', 'Hand - L'], ['xrayHandR', 'Hand - R'],
+      ['xrayHip', 'Hip 2V'], ['xrayHipL', 'Hip - L'], ['xrayHipR', 'Hip - R'],
+      ['xrayHipPelvis', 'Hip with Pelvis'], ['xrayHipPelvisL', 'Hip Pelvis - L'], ['xrayHipPelvisR', 'Hip Pelvis - R'],
+      ['xrayBilateralHipPelvis', 'Bilateral Hip with Pelvis'],
+      ['xrayHumerus', 'Humerus 2V'], ['xrayHumerusL', 'Humerus - L'], ['xrayHumerusR', 'Humerus - R'],
+      ['xrayKnee', 'Knee 2V/3V'], ['xrayKneeL', 'Knee - L'], ['xrayKneeR', 'Knee - R'],
+      ['xrayMandible', 'Mandible 3V/4V'], ['xrayNasalBones', 'Nasal Bones 3V'], ['xrayPelvis', 'Pelvis'],
+      ['xrayRibs', 'Ribs 2V'], ['xrayRibsL', 'Ribs - L'], ['xrayRibsR', 'Ribs - R'], ['xrayRibsB', 'Ribs - B'],
+      ['xrayShoulder', 'Shoulder 2V'], ['xrayShoulderL', 'Shoulder - L'], ['xrayShoulderR', 'Shoulder - R'], ['xrayShoulderB', 'Shoulder - B'],
+      ['xraySpineCervical', 'Spine - Cervical'], ['xraySpineThoracic', 'Spine - Thoracic'], ['xraySpineLumbar', 'Spine - Lumbar'],
+      ['xraySacrum', 'Sacrum/Coccyx'],
+      ['xraySinus', 'Sinus Series'], ['xraySkull', 'Skull'],
+      ['xrayToes', 'Toes 2V'],
+      ['xrayWrist', 'Wrist 2V/3V'],
+      ['xrayFoot', 'Foot X-Ray'],
+      ['xrayTibFib', 'Tib/Fib X-Ray'],
+      ['xrayOther', 'Other X-Ray']
+    ],
+    ultrasoundFields: [
+      ['usAdultEcho', 'Adult Echocardiogram'], ['usCarotid', 'Carotid Doppler'],
+      ['usArterialUpper', 'Arterial Doppler Upper Extremity'],
+      ['usArterialLower', 'Arterial Doppler Lower Extremity'], ['usArterialLowerL', 'Arterial Lower - L'], ['usArterialLowerR', 'Arterial Lower - R'], ['usArterialLowerB', 'Arterial Lower - B'],
+      ['usArterialAbi', 'Arterial Doppler with ABI / Seg Press'], ['usArterialAbiL', 'Arterial ABI - L'], ['usArterialAbiR', 'Arterial ABI - R'], ['usArterialAbiB', 'Arterial ABI - B'],
+      ['usVenousUpper', 'Venous Doppler Upper Extremity'], ['usVenousUpperL', 'Venous Upper - L'], ['usVenousUpperR', 'Venous Upper - R'],
+      ['usVenousLower', 'Venous Doppler Lower Extremity'], ['usVenousLowerL', 'Venous Lower - L'], ['usVenousLowerR', 'Venous Lower - R'],
+      ['usRenal', 'Renal / Renal Artery Doppler'], ['usAbdominal', 'Abdominal Ultrasound'],
+      ['usPelvic', 'Pelvic Ultrasound'], ['usThyroid', 'Thyroid Ultrasound'], ['usAortaIvc', 'Aorta/IVC Duplex Doppler']
+    ],
     urineFields: [['urineDrugScreen', 'Urine drug screen (16)'], ['urineDrugConfirmation', 'Urine drug confirmation (57)'], ['screenConfirmationEtg', 'Screen & Confirmation with ETG/ETS (74)'], ['urinalysis', 'Urinalysis (10)']],
-    molecularFields: [['uaUtiNoStd', 'Urine Analysis & UTI PCR - Without STDs'], ['uaUtiStd', 'Urine Analysis & UTI PCR - With STDs'], ['respiratoryPanel', 'Respiratory Panel with ABR PCR'], ['woundPanel', 'Wound Panel with ABR PCR'], ['nailPanel', 'Nail Panel with ABR PCR'], ['giPanel', 'Gastrointestinal Infection Panel with ABR PCR'], ['pgxComprehensive', 'Pharmacogenomics PGx Comprehensive Panel']],
-    bloodFields: [['compMetabolicPanel', 'Comp Metabolic Panel'], ['lipidPanel', 'Lipid Panel'], ['hepaticProfile', 'Hepatic Profile'], ['basicMetabolicPanel', 'Basic Metabolic Panel'], ['renalPanel', 'Renal Panel'], ['cbcDiff', 'CBC w Diff'], ['reticulocyteCount', 'Reticulocyte Count'], ['rheumatoidFactor', 'Rheumatoid Factor']],
-    wellnessFields: [['wellnessFemale', 'Wellness Panel - Female'], ['wellnessMen', 'Wellness Panel - Men'], ['allergyInhalant', 'Allergy Test Panel - Inhalant Allergens 36'], ['allergyFood', 'Allergy Test Panel - Food Allergens 25']]
+    molecularFields: [
+      ['uaUtiPcr', 'Urine Analysis & UTI PCR'], ['uaUtiPcrWithoutStd', 'UTI - Without STDs'], ['uaUtiPcrWithStd', 'UTI - With STDs'],
+      ['respiratoryPanel', 'Respiratory Panel with ABR PCR'], ['woundPanel', 'Wound Panel with ABR PCR'], ['nailPanel', 'Nail Panel with ABR PCR'], ['giPanel', 'Gastrointestinal Infection Panel with ABR PCR'], ['pgxComprehensive', 'Pharmacogenomics PGx Comprehensive Panel']
+    ],
+    bloodFields: [
+      // Panel headers
+      ['compMetabolicPanel', 'Comp Metabolic Panel'], ['lipidPanel', 'Lipid Panel'],
+      ['hepaticProfile', 'Hepatic Profile'], ['basicMetabolicPanel', 'Basic Metabolic Panel'],
+      ['renalPanel', 'Renal Panel'], ['reticulocyteCount', 'Reticulocyte Count'],
+      // Column 1 (A-C)
+      ['albumin', 'Albumin'], ['aldosterone', 'Aldosterone'], ['alkPhos', 'Alk Phos'], ['alt', 'ALT'],
+      ['amylase', 'Amylase'], ['antiHav', 'Anti-HAV'], ['antiHavIgm', 'Anti-HAV IgM'],
+      ['antiHbc', 'Anti-Hbc'], ['antiHbcIgm', 'Anti-Hbc IgM'], ['antiHbs', 'Anti-HBs'],
+      ['antiHcv', 'Anti-HCV'], ['antiTg', 'Anti-Tg'], ['antiTpo', 'Anti-TPO'],
+      ['aptt', 'APTT'], ['ast', 'AST'], ['bilirubinDirect', 'Bilirubin, Direct'],
+      ['bilirubinTotal', 'Bilirubin, Total'], ['bun', 'BUN'], ['cbcWithDiff', 'CBC w Diff'], ['c3', 'C3'],
+      ['c4', 'C4'], ['ca125', 'CA 125'], ['ca153', 'CA 15-3'], ['ca199', 'CA 19-9'],
+      ['calcium', 'Calcium'], ['chloride', 'Chloride'], ['cholesterolTotal', 'Cholesterol Total'],
+      ['ck', 'CK'], ['co2', 'CO2'], ['cortisolAm', 'Cortisol AM'],
+      // Column 2 (C-H)
+      ['cortisolPm', 'Cortisol PM'], ['cPeptide', 'C-Peptide'], ['creatinine', 'Creatinine'],
+      ['dheaS', 'DHEA-S'], ['digoxin', 'Digoxin'], ['eaIgG', 'EA IgG'],
+      ['ebnaIgG', 'EBNA IgG'], ['ebvIgM', 'EBV IgM'], ['esr', 'ESR'], ['estradiol', 'Estradiol'],
+      ['ferritin', 'Ferritin'], ['folate', 'Folate'],
+      ['freeT3', 'Free T3'], ['freeT4', 'Free T4'], ['fsh', 'FSH'], ['ggt', 'GGT'],
+      ['glucose', 'Glucose'], ['hPyloriIgG', 'H. pylori IgG'], ['hbsAg', 'HBsAg'],
+      ['hcgB', 'HCG+B'], ['hdl', 'HDL'], ['hematocrit', 'Hematocrit'], ['hemoglobin', 'Hemoglobin'],
+      ['hepatitis', 'Hepatitis'], ['hgbA1c', 'HgbA1C'], ['hivScreening', 'HIV Screening'],
+      ['hsCrp', 'hsCRP'], ['hsv1IgG', 'HSV 1 IgG'],
+      // Column 3 (H-P)
+      ['hsv2IgG', 'HSV 2 IgG'], ['igA', 'IgA'], ['igG', 'IgG'], ['igM', 'IgM'], ['insulin', 'Insulin'],
+      ['ironTibc', 'Iron and TIBC'], ['lactate', 'Lactate'], ['ldh', 'LDH'], ['ldl', 'LDL'],
+      ['lh', 'LH'], ['lipase', 'Lipase'], ['lithium', 'Lithium'], ['magnesium', 'Magnesium'],
+      ['measlesIgG', 'Measles IgG'], ['mononucleosis', 'Mononucleosis'], ['mumpsIgG', 'Mumps IgG'],
+      ['phosphorus', 'Phosphorus'], ['potassium', 'Potassium'], ['prealbumin', 'Prealbumin'],
+      ['proBnpII', 'proBNP II'], ['procalcitonin', 'Procalcitonin'], ['progesterone', 'Progesterone'],
+      ['prolactin', 'Prolactin'], ['psaFree', 'PSA, Free'], ['psaTotal', 'PSA, Total'],
+      ['pt', 'PT'], ['pth', 'PTH'], ['quantiferonTbGold', 'QuantiFERON TB GOLD'],
+      // Column 4 (R-V)
+      ['rheumatoidFactor', 'Rheumatoid Factor'], ['rubellaIgG', 'Rubella IgG'], ['rubellaIgM', 'Rubella IgM'],
+      ['shbg', 'SHBG'], ['sodium', 'Sodium'], ['syphilis', 'Syphilis'], ['testosterone', 'Testosterone'],
+      ['totalProtein', 'Total Protein'], ['totalPsa', 'TOTAL PSA'], ['totalT3', 'Total T3'], ['totalT4', 'Total T4'],
+      ['transferrin', 'Transferrin'], ['triglycerides', 'Triglycerides'], ['tsh', 'TSH'], ['tUptake', 'T-Uptake'],
+      ['uibc', 'UIBC'], ['uricAcid', 'Uric Acid'], ['urineMicroalbumin', 'Urine Microalbumin'],
+      ['valproicAcid', 'Valproic Acid'], ['vancomycin', 'Vancomycin'], ['vcaIgG', 'VCA IgG'], ['vitaminB12', 'Vitamin B12'],
+      ['vitaminD', 'Vitamin D'], ['vzvIgG', 'VZV IgG'], ['wbc', 'WBC'],
+      ['albuminCreatinineRandomUrine', 'Albumin Creatinine Random Urine'],
+      ['allergyTestPanel', 'Allergy Test Panel'], ['allergyTestPanelInhalant', 'Allergy - Inhalant Allergens-36'], ['allergyTestPanelFood', 'Allergy - Food Allergens-25']
+    ],
+    wellnessFields: [['wellnessFemale', 'Wellness Panel - Female'], ['wellnessMen', 'Wellness Panel - Men']]
   };
 
   function byId(id) { return document.getElementById(id); }
@@ -90,7 +296,78 @@
   function renderCheckboxes() {
     Object.entries(CHECKBOX_GROUPS).forEach(([containerId, items]) => {
       const container = byId(containerId);
+      
+      // Group items by base name (e.g., xrayChest -> [xrayChest, xrayChest1v, xrayChest2v])
+      const groups = {};
+      const standalone = [];
+      
       items.forEach(([id, labelText]) => {
+        // Check if this is a sub-option (ends with L, R, B, or has 1v/2v pattern)
+        const suffixMatch = id.match(/^(.+?)(L|R|B|1v|2v)$/i);
+        if (suffixMatch) {
+          const baseId = suffixMatch[1];
+          // Find if parent exists
+          const parentItem = items.find(([pid]) => pid === baseId || pid === baseId.replace(/([A-Z])/g, '$1'));
+          if (parentItem) {
+            if (!groups[parentItem[0]]) {
+              groups[parentItem[0]] = { main: parentItem, subs: [] };
+            }
+            groups[parentItem[0]].subs.push([id, labelText]);
+          } else {
+            standalone.push([id, labelText]);
+          }
+        } else {
+          // Check if this has sub-options
+          const hasSubs = items.some(([sid]) => sid.startsWith(id) && sid !== id);
+          if (hasSubs) {
+            if (!groups[id]) {
+              groups[id] = { main: [id, labelText], subs: [] };
+            } else {
+              groups[id].main = [id, labelText];
+            }
+          } else {
+            standalone.push([id, labelText]);
+          }
+        }
+      });
+      
+      // Render grouped items
+      Object.values(groups).forEach(group => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'checkbox-with-options';
+        
+        // Main checkbox
+        const mainLabel = document.createElement('label');
+        mainLabel.className = 'main-checkbox';
+        const mainInput = document.createElement('input');
+        mainInput.type = 'checkbox';
+        mainInput.id = group.main[0];
+        mainLabel.append(mainInput, document.createTextNode(group.main[1]));
+        wrapper.appendChild(mainLabel);
+        
+        // Sub-options container
+        if (group.subs.length > 0) {
+          const subsContainer = document.createElement('span');
+          subsContainer.className = 'sub-options';
+          group.subs.forEach(([subId, subLabel]) => {
+            const subLabelEl = document.createElement('label');
+            subLabelEl.className = 'sub-checkbox';
+            const subInput = document.createElement('input');
+            subInput.type = 'checkbox';
+            subInput.id = subId;
+            // Extract just L/R/B or 1V/2V from the label
+            const shortLabel = subLabel.match(/- ([LRB]|1V|2V)$/i)?.[1] || subLabel.split(' - ').pop() || subLabel;
+            subLabelEl.append(subInput, document.createTextNode(shortLabel));
+            subsContainer.appendChild(subLabelEl);
+          });
+          wrapper.appendChild(subsContainer);
+        }
+        
+        container.appendChild(wrapper);
+      });
+      
+      // Render standalone items
+      standalone.forEach(([id, labelText]) => {
         const label = document.createElement('label');
         const input = document.createElement('input');
         input.type = 'checkbox';
@@ -175,10 +452,11 @@
     lines.slice(0, 6).forEach((line, index) => page.drawText(line, { x: start.x, y: start.y - (index * lineHeight), size, font, color }));
   }
 
-  function drawCheck(page, field, color) {
-    // Offset to center X mark inside checkbox square
-    const p = sourceToPdf(page, field.x + 2, field.top + 8);
-    page.drawText('X', { x: p.x, y: p.y, size: CHECK_SIZE, color });
+  function drawCheck(page, field, font, color) {
+    // Offset to center X mark inside checkbox square (checkbox ~17x16, X text ~10px)
+    // Add ~4 to x and ~12 to top to position the X baseline in the center
+    const p = sourceToPdf(page, field.x + 4, field.top + 12);
+    page.drawText('X', { x: p.x, y: p.y, size: CHECK_SIZE, font, color });
   }
 
   async function drawSignature(pdfDoc, page) {
@@ -238,7 +516,7 @@
       if (field.id === 'genderM' && gender !== 'M') return;
       if (field.id === 'genderF' && gender !== 'F') return;
       if (field.id !== 'genderM' && field.id !== 'genderF' && !checked(field.id)) return;
-      drawCheck(page, field, blueInk);
+      drawCheck(page, field, font, blueInk);
     });
 
     await drawSignature(pdfDoc, page);

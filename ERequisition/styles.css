@@ -45,11 +45,23 @@ body {
   padding: 32px 0 24px;
 }
 
+.header-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
 .header-logo {
-  max-width: 320px;
+  max-width: 280px;
   width: 100%;
   height: auto;
-  margin-bottom: 12px;
+}
+
+.header-logo.rmds-logo {
+  max-width: 200px;
 }
 
 .app-header h1 {
@@ -356,6 +368,58 @@ body {
   background: #fff;
   cursor: pointer;
   line-height: 1.25;
+}
+
+/* Hierarchical checkbox with sub-options */
+.checkbox-with-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.checkbox-with-options .main-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  padding: 4px 0;
+  background: transparent;
+  font-weight: 500;
+}
+
+.checkbox-with-options .sub-options {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 4px;
+  padding-left: 8px;
+  border-left: 2px solid var(--border);
+}
+
+.checkbox-with-options .sub-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--primary-light);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.checkbox-with-options .sub-checkbox:hover {
+  background: #d4ebe0;
+  border-color: var(--primary);
+}
+
+.checkbox-with-options .sub-checkbox input {
+  width: 14px;
+  height: 14px;
 }
 
 input[type="checkbox"],

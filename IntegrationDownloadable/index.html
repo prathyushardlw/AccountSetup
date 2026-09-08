@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EMR Integration Request Form</title>
+  <link rel="stylesheet" href="styles.css?v=1">
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="app-header">
+      <img src="../Integration/logo.png" alt="TestGO - DLW | MicroGen Health" class="header-logo">
+      <h1>EMR Integration Request Form</h1>
+      <p class="subtitle">Fill out the form below and download a completed PDF</p>
+    </header>
+
+    <form id="emrForm" autocomplete="off">
+      <section class="form-section">
+        <h2 class="section-title">Client Information</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="clientName">Client Name</label>
+            <input type="text" id="clientName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="clientAddress">Client Address</label>
+            <input type="text" id="clientAddress">
+          </div>
+          <div class="form-group">
+            <label for="clientContact">Contact Number</label>
+            <input type="tel" id="clientContact">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="clientEmail">Email ID</label>
+            <input type="email" id="clientEmail">
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="section-title">EMR Details</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="emrName">EMR Name</label>
+            <input type="text" id="emrName">
+          </div>
+        </div>
+        <div class="info-note">
+          <strong>If EMR is Practice Fusion:</strong> Account Number = First 3-5 characters of Client Name + 001<br>
+          <em>Example: Client Name 'TESTGO' becomes Account Number 'testgo001'</em>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="section-title">Expected Volume Summary</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="overallVolume">Expected Overall Volume</label>
+            <input type="text" id="overallVolume">
+          </div>
+          <div class="form-group">
+            <label for="patientVolume">Expected Patient Volume</label>
+            <input type="text" id="patientVolume">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="pcrVolume">Expected PCR Volume</label>
+            <input type="text" id="pcrVolume">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="volumeSummary">Summary</label>
+            <textarea id="volumeSummary" class="large-textbox" rows="8"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="section-title">Provider Information</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="providerName">Provider Name</label>
+            <input type="text" id="providerName">
+          </div>
+          <div class="form-group">
+            <label for="npiNumber">NPI Number</label>
+            <input type="text" id="npiNumber">
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="section-title">EMR Point of Contact</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="pocName">Name</label>
+            <input type="text" id="pocName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pocEmail">Email</label>
+            <input type="email" id="pocEmail">
+          </div>
+          <div class="form-group">
+            <label for="pocContact">Contact Number</label>
+            <input type="tel" id="pocContact">
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="section-title">Integration Type</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <div class="radio-group">
+              <label><input type="radio" name="integrationType" value="Uni-Directional"> Uni-Directional</label>
+              <label><input type="radio" name="integrationType" value="Bi-Directional"> Bi-Directional</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="section-title">Sales Rep Information</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="salesName">Name</label>
+            <input type="text" id="salesName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="salesEmail">Email</label>
+            <input type="email" id="salesEmail">
+          </div>
+          <div class="form-group">
+            <label for="salesContact">Contact Number</label>
+            <input type="tel" id="salesContact">
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="section-title">Approved By</h2>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="approvedName">Name</label>
+            <input type="text" id="approvedName">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="approvedEmail">Email</label>
+            <input type="email" id="approvedEmail">
+          </div>
+          <div class="form-group">
+            <label for="approvedContact">Contact Number</label>
+            <input type="tel" id="approvedContact">
+          </div>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button type="button" id="btnGenerate" class="btn btn-primary">Download PDF</button>
+        <button type="reset" class="btn btn-secondary">Clear Form</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="app.js?v=1"></script>
+</body>
+</html>
